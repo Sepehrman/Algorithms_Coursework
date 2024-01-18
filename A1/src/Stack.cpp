@@ -4,13 +4,12 @@
 // Implement the functions inside the Stack.h
 
 #include "../include/Stack.h"
-
-// Stack.cpp
+using namespace std;
 
 template <typename T>
 Stack<T>::Stack() {
     currentSize = 0;
-    buffer = std::vector<T>();
+    buffer = vector<T>();
 }
 
 template <typename T>

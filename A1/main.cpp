@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include "tests/StackTests.h"
-//#include "tests/CircularQueueTests.h"
+#include "tests/CircularQueueTests.h"
 //#include "tests/BookReservationTests.h"
 /*
  * This is the driver file which directs the project on testing different modules.
@@ -21,10 +21,10 @@ int main(int argc, char* argv[]) {
     }
     switch (module_choice) {
         case 0: // Testing Assignment 1:
-            std::cout << ">> Stack:\t\t\t\t\t\t";
-            stackTests();
-//            std::cout << ">> CircularQueue:\t\t\t\t";
-//            circularQueueTests();
+//            std::cout << ">> Stack:\t\t\t\t\t\t";
+//            stackTests();
+            std::cout << ">> CircularQueue:\t\t\t\t";
+            circularQueueTests();
 //            std::cout << ">> Book Reservation System: \t";
 //            bookReservationTests();
             break;
