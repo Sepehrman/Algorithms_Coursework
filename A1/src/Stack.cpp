@@ -1,5 +1,5 @@
 //
-// Created by Sepeh on 2024-01-18.
+// Created by Sepehr on 2024-01-18.
 //
 // Implement the functions inside the Stack.h
 
