@@ -60,4 +60,3 @@ template<typename T>
 const T &CircularQueue<T>::front() const {
     return buffer[frontIndex];
 }
-
