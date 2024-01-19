@@ -2,23 +2,29 @@
 using namespace std;
 
 
+/**
+ * The following constructor initiallizes the values for our Circular Queue. Where by default our size starts from 0
+ * and the rearIndex & frontIndex are set to 0 it is defined in the form of a placement in which our next element is
+ * placed. The rearIndex would remain
+ * @tparam T Generic Function Type
+ * @param capacity The capacity in which we are resizing our vector to be
+ */
 template<typename T>
 CircularQueue<T>::CircularQueue(int capacity) {
-    buffer = vector<T>(capacity);
-    currentSize = buffer.size();
+    currentSize = 0;
     rearIndex = 0;
-    frontIndex = buffer.size();
-
+    frontIndex = 0;
+    buffer.resize(capacity);
 }
 
 template<typename T>
 bool CircularQueue<T>::isFull() const {
-    return buffer.size() == capacity;
+    return currentSize == capacity;
 }
 
 template<typename T>
 bool CircularQueue<T>::isEmpty() const {
-    return buffer.size() == 0;
+    return currentSize == 0;
 }
 
 template<typename T>
@@ -28,27 +34,30 @@ size_t CircularQueue<T>::size() const {
 
 template<typename T>
 void CircularQueue<T>::enqueue(const T &element) {
-//    currentSize++;
-//    buffer.push_back(element);
-//    if (!isFull()) {
-//        buffer.push_back(element);
-//    }
+
+    if (!isFull()) {
+        buffer[rearIndex] = element;
+        rearIndex = (rearIndex + 1) % capacity;
+        ++currentSize;
+    }
 }
 
 template<typename T>
 void CircularQueue<T>::dequeue() {
-//    buffer.erase(buffer.begin() + currentSize-1);
-//    currentSize--;
+    if (!isEmpty()) { ;
+        frontIndex = (frontIndex + 1) % capacity;
+        --currentSize;
+    }
 }
 
 template<typename T>
 T &CircularQueue<T>::front() {
-    return buffer.front();
+    return buffer[frontIndex];
 }
 
 
 template<typename T>
 const T &CircularQueue<T>::front() const {
-    return buffer.front();
+    return buffer[frontIndex];
 }
 
