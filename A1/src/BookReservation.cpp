@@ -12,8 +12,14 @@ ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
 
 }
 
-BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingReservations) {
 
+//CircularQueue<ReservationRecord> pendingReservations;
+//Stack<ReservationRecord> fulfilledReservations;
+//std::vector<Book> booksDB;
+
+// Book Reservations System
+BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingReservations) {
+    booksDB.resize(maxPendingReservations);
 }
 
 void BookReservationManagementSystem::indexBookToDB(const Book &book) {
@@ -21,6 +27,7 @@ void BookReservationManagementSystem::indexBookToDB(const Book &book) {
 }
 
 void BookReservationManagementSystem::enqueueReservation(const Patron &patron, const Book &book) {
+
 
 }
 
