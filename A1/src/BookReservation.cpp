@@ -5,11 +5,13 @@
 #include "../include/BookReservation.h"
 
 ReservationRecord::ReservationRecord(string &patronID, string &bookISBN) {
-
+    bookISBN = bookISBN;
+    patronID = patronID;
 }
 
 ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
-
+    bookISBN = book.ISBN;
+    patronID = patron.ID;
 }
 
 
@@ -23,18 +25,25 @@ BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingR
 }
 
 void BookReservationManagementSystem::indexBookToDB(const Book &book) {
-
+    booksDB.push_back(book);
 }
 
 void BookReservationManagementSystem::enqueueReservation(const Patron &patron, const Book &book) {
-
-
+    pendingReservations.enqueue(ReservationRecord(patron, book));
 }
 
 ReservationRecord BookReservationManagementSystem::processReservation() {
-    return ReservationRecord();
+    if (pendingReservations.isEmpty()) {
+        return ReservationRecord();
+    }
+
+    ReservationRecord res = pendingReservations.front();
+    fulfilledReservations.push(res);
+    pendingReservations.dequeue();
+
+    return res;
 }
 
 void BookReservationManagementSystem::enqueueReservation(const ReservationRecord &reservation) {
-
+    pendingReservations.enqueue(reservation);
 }
