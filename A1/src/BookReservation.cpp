@@ -5,8 +5,8 @@
 #include "../include/BookReservation.h"
 
 ReservationRecord::ReservationRecord(string &patronID, string &bookISBN) {
-    bookISBN = bookISBN;
-    patronID = patronID;
+    this->bookISBN = bookISBN;
+    this->patronID = patronID;
 }
 
 ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
@@ -21,6 +21,9 @@ ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
 
 // Book Reservations System
 BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingReservations) {
+    booksDB = vector<Book>();
+    pendingReservations = CircularQueue<ReservationRecord>(maxPendingReservations);
+    fulfilledReservations = Stack<ReservationRecord>();
     booksDB.resize(maxPendingReservations);
 }
 
