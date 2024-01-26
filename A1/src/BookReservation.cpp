@@ -58,8 +58,9 @@ void BookReservationManagementSystem::enqueueReservation(const Patron &patron, c
 
 
 /**
- *
- * @return
+ * Processes a reservation. This would mean that the front-most reservation would be picked, pushed to the fulfilled
+ * reservations and once the reservation is complete, the current reservation is dequeued for the next reservation set
+ * @return a Reservation object
  */
 ReservationRecord BookReservationManagementSystem::processReservation() {
     if (pendingReservations.isEmpty()) {
@@ -67,8 +68,8 @@ ReservationRecord BookReservationManagementSystem::processReservation() {
     }
 
     ReservationRecord res = pendingReservations.front();
-    pendingReservations.dequeue();
     fulfilledReservations.push(res);
+    pendingReservations.dequeue();
 
 
     return res;
