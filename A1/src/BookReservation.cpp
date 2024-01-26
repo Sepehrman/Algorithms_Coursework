@@ -75,6 +75,10 @@ ReservationRecord BookReservationManagementSystem::processReservation() {
     return res;
 }
 
+/**
+ * Enqueues and adds a reservation (object) to the pending reservations given the reservation
+ * @param reservation an Object representing a reservation
+ */
 void BookReservationManagementSystem::enqueueReservation(const ReservationRecord &reservation) {
     pendingReservations.enqueue(reservation);
 }
