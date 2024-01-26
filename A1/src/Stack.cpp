@@ -1,17 +1,16 @@
-//
-// Created by Sepehr on 2024-01-18.
-//
-// Implement the functions inside the Stack.h
-
 #include "../include/Stack.h"
 using namespace std;
+
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
 
 /**
  * The following code simply makes use of the vector built-in functions `push_back()` & `pop_back()` to replicate
  * addition & removal of elements from the Stack. The size of the stack is incremented and decremented with
  * the corresponding functions push() & pop().
  */
-
 
 /**
  * The following initializes the stack as a vector object and sets the size to 0.
@@ -76,5 +75,3 @@ template<typename T>
 const T &Stack<T>::top() const {
     return buffer.back();
 }
-
-
