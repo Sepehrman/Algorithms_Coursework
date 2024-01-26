@@ -7,10 +7,14 @@
 using namespace std;
 
 /**
- * The following initializes the stack as a vector object and sets the size to 0.
- * The code simply makes use of the vector built-in functions `push_back()` & `pop_back()` to replicate
+ * The following code simply makes use of the vector built-in functions `push_back()` & `pop_back()` to replicate
  * addition & removal of elements from the Stack. The size of the stack is incremented and decremented with
  * the corresponding functions push() & pop().
+ */
+
+
+/**
+ * The following initializes the stack as a vector object and sets the size to 0.
  */
 template <typename T>
 Stack<T>::Stack() {
