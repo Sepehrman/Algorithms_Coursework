@@ -4,8 +4,6 @@
 
 #include "../include/BookReservation.h"
 
-
-
 /**
  * The following constructor initializes a book reservation record given its patronID & Book's ISBN
  * @param patronID a String representing patron ID
@@ -25,7 +23,6 @@ ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
     bookISBN = book.ISBN;
     patronID = patron.ID;
 }
-
 
 /**
  * The following constructor initializes the book reservation system and initializes all of the pending & fulfilled
@@ -56,7 +53,6 @@ void BookReservationManagementSystem::enqueueReservation(const Patron &patron, c
     pendingReservations.enqueue(ReservationRecord(patron, book));
 }
 
-
 /**
  * Processes a reservation. This would mean that the front-most reservation would be picked, pushed to the fulfilled
  * reservations and once the reservation is complete, the current reservation is dequeued for the next reservation set
@@ -70,7 +66,6 @@ ReservationRecord BookReservationManagementSystem::processReservation() {
     ReservationRecord res = pendingReservations.front();
     fulfilledReservations.push(res);
     pendingReservations.dequeue();
-
 
     return res;
 }
