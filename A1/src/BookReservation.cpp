@@ -4,18 +4,33 @@
 
 #include "../include/BookReservation.h"
 
+
+
+/**
+ * The following constructor initializes a book reservation record given its patronID & Book's ISBN
+ * @param patronID a String representing patron ID
+ * @param bookISBN a String representing a book's ISBN
+ */
 ReservationRecord::ReservationRecord(string &patronID, string &bookISBN) {
     this->bookISBN = bookISBN;
     this->patronID = patronID;
 }
 
+/**
+ * The following constructor initializes a book reservation record given book & patron objects
+ * @param patronID an Object representing a patron
+ * @param bookISBN an Objectrepresenting a book
+ */
 ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
     bookISBN = book.ISBN;
     patronID = patron.ID;
 }
 
 
-// Book Reservations System
+/**
+ * The following constructor initializes
+ * @param maxPendingReservations
+ */
 BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingReservations) {
     booksDB = vector<Book>();
     pendingReservations = CircularQueue<ReservationRecord>(maxPendingReservations);
