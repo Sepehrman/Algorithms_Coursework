@@ -19,7 +19,7 @@ ReservationRecord::ReservationRecord(string &patronID, string &bookISBN) {
 /**
  * The following constructor initializes a book reservation record given book & patron objects
  * @param patronID an Object representing a patron
- * @param bookISBN an Objectrepresenting a book
+ * @param bookISBN an Object representing a book
  */
 ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
     bookISBN = book.ISBN;
@@ -39,14 +39,28 @@ BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingR
 //    booksDB.resize(maxPendingReservations);
 }
 
+/**
+ * Indexes/pushes a book onto the books Database
+ * @param book an Object representing a book
+ */
 void BookReservationManagementSystem::indexBookToDB(const Book &book) {
     booksDB.push_back(book);
 }
 
+/**
+ * Enqueues and adds a reservation (object) to the pending reservations provided the patron & book objects
+ * @param patronID an Object representing a patron
+ * @param bookISBN an Object representing a book
+ */
 void BookReservationManagementSystem::enqueueReservation(const Patron &patron, const Book &book) {
     pendingReservations.enqueue(ReservationRecord(patron, book));
 }
 
+
+/**
+ *
+ * @return
+ */
 ReservationRecord BookReservationManagementSystem::processReservation() {
     if (pendingReservations.isEmpty()) {
         return ReservationRecord();
