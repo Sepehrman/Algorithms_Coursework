@@ -1,8 +1,9 @@
-//
-// Created by Sepehr on 2024-01-18.
-//
-
 #include "../include/BookReservation.h"
+
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
 
 /**
  * The following constructor initializes a book reservation record given its patronID & Book's ISBN

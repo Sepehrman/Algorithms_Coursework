@@ -1,6 +1,10 @@
 #include "../include/CircularQueue.h"
 using namespace std;
 
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
 
 /**
  * The following constructor initializes the values for our Circular Queue. Where by default our size starts from 0
