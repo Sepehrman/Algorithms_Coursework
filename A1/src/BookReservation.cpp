@@ -28,14 +28,15 @@ ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
 
 
 /**
- * The following constructor initializes
+ * The following constructor initializes the book reservation system and initializes all of the pending & fulfilled
+ * reservations
  * @param maxPendingReservations
  */
 BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingReservations) {
     booksDB = vector<Book>();
     pendingReservations = CircularQueue<ReservationRecord>(maxPendingReservations);
     fulfilledReservations = Stack<ReservationRecord>();
-    booksDB.resize(maxPendingReservations);
+//    booksDB.resize(maxPendingReservations);
 }
 
 void BookReservationManagementSystem::indexBookToDB(const Book &book) {
