@@ -74,6 +74,7 @@ void CircularQueue<T>::dequeue() {
     if (!isEmpty()) {
         frontIndex = (frontIndex + 1) % capacity;
         --currentSize;
+        // TODO: Remove the element here?
     }
 }
 
