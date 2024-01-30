@@ -71,7 +71,7 @@ void CircularQueue<T>::enqueue(const T &element) {
  */
 template<typename T>
 void CircularQueue<T>::dequeue() {
-    if (!isEmpty()) { ;
+    if (!isEmpty()) {
         frontIndex = (frontIndex + 1) % capacity;
         --currentSize;
     }
