@@ -9,10 +9,7 @@ using namespace std;
 /**
  * The following constructor initializes the values for our Circular Queue. Where by default our size starts from 0
  * and the rearIndex & frontIndex are set to 0 in the initial state. Our vector is then resized to a specific capacity
- * which is the size in which our vector can withhold.
- * When it comes to enqueue & dequeue, we would need to come up with a way for our data structure to start from the
- * 0th position once we reach the end for our vector. We use the formula (Index + 1) % Capacity to reset the position
- * of our rear & front indices
+ * which is the size our vector can withhold.
  * @param capacity The capacity in which we are resizing our vector to be
  */
 template<typename T>
@@ -74,7 +71,6 @@ void CircularQueue<T>::dequeue() {
     if (!isEmpty()) {
         frontIndex = (frontIndex + 1) % capacity;
         currentSize--;
-        // TODO: Remove the element here?
     }
 }
 

@@ -55,12 +55,11 @@ void BookReservationManagementSystem::enqueueReservation(const Patron &patron, c
 }
 
 /**
- * Processes the first reservation in Line. This method finds the front-most reservation, dequeues the turn
- * Iterates over the database of books available. If the book's ISBN matches the current (front-most) placed reservation
+ * Processes the first reservation in Line. This method finds the front-most reservation, dequeues the turn and Iterates
+ * over the database of books available. If the book's ISBN matches the current (front-most) placed reservation
  * & if there are copies available, the current placed reservation would be moved to the fulfilled reservations stack
- * and the number of copies of the picked-out book would decrease by 1.
- * Once the iteration is done, it will be the next reservation's turn.
- * If none of the pending reservations are matched, the method throws a ReservationRecordUnavailable Exception.
+ * and the number of copies of the picked-out book would decrease by 1. If no matching reservations are found, it moves
+ * to the next one. If none of the pending reservations are matched, the method throws a ReservationRecordUnavailable Exception.
  * @return a Reservation object
  * @throws ReservationRecordUnavailable an Exception when reservation is not available
  */
