@@ -61,7 +61,7 @@ void CircularQueue<T>::enqueue(const T &element) {
     if (!isFull()) {
         buffer[rearIndex] = element;
         rearIndex = (rearIndex + 1) % capacity;
-        ++currentSize;
+        currentSize++;
     }
 }
 
@@ -73,7 +73,7 @@ template<typename T>
 void CircularQueue<T>::dequeue() {
     if (!isEmpty()) {
         frontIndex = (frontIndex + 1) % capacity;
-        --currentSize;
+        currentSize--;
         // TODO: Remove the element here?
     }
 }

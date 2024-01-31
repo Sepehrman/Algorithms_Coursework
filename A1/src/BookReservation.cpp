@@ -1,4 +1,5 @@
 #include "../include/BookReservation.h"
+#include "../include/LExceptions.h"
 
 /**
  * @author          Sepehr Mansouri
@@ -28,13 +29,12 @@ ReservationRecord::ReservationRecord(const Patron &patron, const Book &book) {
 /**
  * The following constructor initializes the book reservation system and initializes all of the pending & fulfilled
  * reservations
- * @param maxPendingReservations
+ * @param maxPendingReservations Max number of pending reservations the Circular Queue can accept
  */
 BookReservationManagementSystem::BookReservationManagementSystem(int maxPendingReservations) {
     booksDB = vector<Book>();
     pendingReservations = CircularQueue<ReservationRecord>(maxPendingReservations);
     fulfilledReservations = Stack<ReservationRecord>();
-//    booksDB.resize(maxPendingReservations);
 }
 
 /**
@@ -54,21 +54,26 @@ void BookReservationManagementSystem::enqueueReservation(const Patron &patron, c
     pendingReservations.enqueue(ReservationRecord(patron, book));
 }
 
-/**
- * Processes a reservation. This would mean that the front-most reservation would be picked, pushed to the fulfilled
- * reservations and once the reservation is complete, the current reservation is dequeued for the next reservation set
- * @return a Reservation object
- */
+
 ReservationRecord BookReservationManagementSystem::processReservation() {
-    if (pendingReservations.isEmpty()) {
-        return ReservationRecord();
+
+    for (int i = 0; i < pendingReservations.size(); i++)
+    {
+        ReservationRecord frontInLine = pendingReservations.front();
+        pendingReservations.dequeue();
+        for (int j = 0; j < booksDB.size(); j++)
+        {
+            if (booksDB[j].copies > 0 && booksDB[j].ISBN == frontInLine.bookISBN)
+            {
+                booksDB[j].copies--;
+                fulfilledReservations.push(frontInLine);
+                return frontInLine;
+            }
+        }
+        pendingReservations.enqueue(frontInLine);
     }
 
-    ReservationRecord res = pendingReservations.front();
-    fulfilledReservations.push(res);
-    pendingReservations.dequeue();
-
-    return res;
+    throw LEXCEPTIONS_H::ReservationRecordUnavailable();
 }
 
 /**
