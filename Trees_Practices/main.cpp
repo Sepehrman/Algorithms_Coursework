@@ -72,14 +72,59 @@ void printInorder(struct Node* node)
     printInorder(node->right);
 }
 
+Node* findMax(Node *root) {
+
+    if (root == nullptr) {
+        return nullptr;
+    }
+    
+    if (root->right == nullptr) {
+        return root;
+    }
+    
+    return findMax(root->right);
+}
+
+Node* findMin(Node *root) {
+
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    if (root->left == nullptr) {
+        return root;
+    }
+
+    return findMin(root->left);
+}
+
+
+void remove(Node *root, Node *nodeToDelete) {
+
+    if (nodeToDelete == nullptr || root == nullptr) {
+        return;
+    }
+
+//    if (nodeToDelete->data )
+
+
+}
+
+
+
+
+
+
+
+
 // Driver code
 int main()
 {
-    struct Node* root = newNode(1);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(4);
-    root->left->right = newNode(5);
+    struct Node* root = newNode(10);
+    root->left = newNode(7);
+    root->right = newNode(15);
+    root->left->left = newNode(3);
+    root->right->right = newNode(18);
 
     // Function call
     cout << "Inorder traversal of binary tree is \n";
@@ -88,6 +133,10 @@ int main()
 
     struct Node* comparingNode = newNode(3);
     cout << "Tree contains " << comparingNode->data << "?" << endl;
-    cout << contains(root, comparingNode);
+    cout << contains(root, comparingNode) << endl;
+
+
+    cout << "Find Min & Max" << endl;
+    cout << "Min: " << findMin(root)->data << " Max: " << findMax(root)->data;
     return 0;
 }
