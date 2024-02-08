@@ -17,6 +17,7 @@ Step-by-step guide:
 * **Important note**: for each module, after the implementation make sure its provided test cases run flawlessly.
   * running the test cases will give you the grade that you will get for that module. 
   * You are **not allowed** to use any STL data structures in your final submission except for `vector` and `list`.
+    * You must use your implemented `Stack` class whenever a stack is required. You will lose marks if you use `vector` or `list` in those cases. 
   * You are allowed to use the `algorithm` library in the `.cpp` files you implement.
 
 1. Copy your completed `Stack` implementation from assignment 1 into `src` directory.
@@ -59,7 +60,7 @@ Step-by-step guide:
 ## Submission and Grading:
 
 As stated earlier, you are not supposed to change the content of the files inside `docs`, `include` and `tests` folders.
-Therefore, zip out your `src` folder which is expected to contain `UnorderedSet.cpp`, `HashTable.cpp`, and
+Therefore, zip out your `src` folder which is expected to contain `Stack.cpp`, `UnorderedSet.cpp`, `HashTable.cpp`, and
 `BookRecommendation.cpp` and submit it. Your submitted `src` files must be able to be compiled and run with the provided
 `CMakeLists.txt` file. If you compile and run the `main.cpp` file, you must be able to see the grade which will be 
 submitted to https://learn.bcit.ca for this assignment, if you have done everything properly, you will see the following
@@ -73,13 +74,15 @@ output:
 ### Rubric:
 As the feedback you will receive an output similar to the one posted above, with a difference; if your tests fail or the
 submission crashes you will also receive the error message, so you can follow up on the error to improve your 
-understanding of this assignment. Here is the breakdown of the grades for this assignment:
+understanding of this assignment. Although the HashTable tests do not explicitly test for the HashTable to be hopscotch,
+you will lose all the marks for the HashTable if it is not hopscotch, regardless of the percentage of the tests that it passes. 
+Here is the breakdown of the grades for this assignment:
 
 * UnorderedSet: 25 marks
 * HashTable: 20 marks
 * Book Recommender System: 25 marks
 * Documentation inside the code for public functions: 5 marks
-* Submission of extra files in addition to requested (`UnorderedSet.cpp`, `HashTable.cpp`, `BookRecommendation.cpp`) penalty: -4 marks
+* Submission of extra files in addition to requested (`Stack.cpp`, `UnorderedSet.cpp`, `HashTable.cpp`, `BookRecommendation.cpp`) penalty: -4 marks
 
 Your final grade for assignment 2 will therefore be calculated from 75 marks.
 

@@ -7,7 +7,7 @@
 
 #include "../include/Utils.h"
 
-static inline int assert(bool condition) {
+static inline int a_assert(bool condition) {
     return condition ? 1 : 0;
 }
 

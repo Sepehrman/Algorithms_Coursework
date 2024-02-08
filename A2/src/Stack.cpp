@@ -31,7 +31,7 @@ bool Stack<T>::isEmpty() const {
  */
 template <typename T>
 size_t Stack<T>::size() const {
-   return currentSize;
+    return currentSize;
 }
 
 /**

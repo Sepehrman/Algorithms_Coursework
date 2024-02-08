@@ -1,13 +1,13 @@
 //
-// Created by Sepeh on 2024-02-02.
+// Created by Sepeh on 2024-02-07.
 //
-
 
 #include "../include/UnorderedSet.h"
 
 
 template<typename Key>
 UnorderedSet<Key>::UnorderedSet() {
+
 
 }
 
@@ -33,7 +33,7 @@ bool UnorderedSet<Key>::insert(const Key &key) {
 
 template<typename Key>
 bool UnorderedSet<Key>::search(const Key &key) const {
-
+    return false;
 }
 
 template<typename Key>
