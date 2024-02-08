@@ -17,14 +17,15 @@ UnorderedSet<Key>::~UnorderedSet() {
 }
 
 template<typename Key>
-UnorderedSet::Iterator UnorderedSet<Key>::begin() const {
-    return UnorderedSet::Iterator(nullptr);
+typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
+    return UnorderedSet<Key>::Iterator(nullptr);
 }
 
 template<typename Key>
-UnorderedSet::Iterator UnorderedSet<Key>::end() const {
-    return UnorderedSet::Iterator(nullptr);
+typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
+    return UnorderedSet<Key>::Iterator(nullptr);
 }
+
 
 template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
