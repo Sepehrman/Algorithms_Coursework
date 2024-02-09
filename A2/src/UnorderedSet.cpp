@@ -32,18 +32,18 @@ template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
 
     if (root == nullptr) {
-
-        root->key = key;
+        root = new Node<Key>(key);
         root->color = Color::BLACK;
+        return true;
     }
-
 
     if (root->key > key) {
-
+        return insert(root->left);
     }
 
-
-
+    if (root->key < key) {
+        return insert(root->left);
+    }
 }
 
 template<typename Key>
