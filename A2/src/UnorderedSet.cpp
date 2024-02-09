@@ -7,12 +7,13 @@
 
 template<typename Key>
 UnorderedSet<Key>::UnorderedSet() {
-
+    root = nullptr;
 
 }
 
 template<typename Key>
 UnorderedSet<Key>::~UnorderedSet() {
+    root = nullptr;
 
 }
 
@@ -29,7 +30,20 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
 
 template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
-    return false;
+
+    if (root == nullptr) {
+
+        root->key = key;
+        root->color = Color::BLACK;
+    }
+
+
+    if (root->key > key) {
+
+    }
+
+
+
 }
 
 template<typename Key>
