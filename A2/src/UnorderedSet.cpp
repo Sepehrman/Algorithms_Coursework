@@ -33,6 +33,9 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
 template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
 
+    // TODO: Add implementation for parent node?
+//    Node<Key>* currentNode = root;
+//    Node<Key>* parent = nullptr;
 
     if (root == nullptr) {
         root = new Node<Key>(key);
@@ -44,40 +47,37 @@ bool UnorderedSet<Key>::insert(const Key &key) {
     if (key < root->key) {
         root = root->left;
         insert(key);
-        // WORKING SAMPLE
-//        root->left = new Node<Key>(key);
-//        root->left->parent = root;
-//        return true;
     }
 
     if (key > root->key) {
         root = root->right;
+        insert(key);
     }
 
     return true;
-//    if (root->key > key) {
-//        root->left;
-//        return insert();
-//    }
-//
-//    if (root->key < key) {
-//        return insert(root->left);
-//    }
 }
 
 template<typename Key>
 bool UnorderedSet<Key>::search(const Key &key) const {
 
-//    if (key == nullptr) {
-//        return false;
-//    }
-//
-//    if (key < root->key) {
-//
-//    }
-//
-    return false;
+    if (&key == nullptr) {
+        return false;
+    }
+
+    if (root->key == key) {
+        return true;
+    }
+
+    if (key < root->key) {
+        root = root->left;
+    }
+
+    if (key > root->key) {
+        root = root->right;
+    }
+    search(key);
 }
+
 
 template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
