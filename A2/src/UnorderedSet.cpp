@@ -88,7 +88,9 @@ bool UnorderedSet<Key>::insert(const Key &key) {
 
     ++setSize;
 
-//    fixRedRedViolation(newNode);
+    if (newNode->color == Color::RED && newNode->parent->color == Color::RED) {
+        fixRedRedViolation(newNode);
+    }
 
     return true;
 }
@@ -220,6 +222,40 @@ size_t UnorderedSet<Key>::getSize(Node<Key> *node) const {
 template<typename Key>
 void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
 
+    Node<Key> *father = node->parent;
+    Node<Key> *grandFather = father->parent;
+    Node<Key> *uncle = grandFather->left != father ? grandFather->left : grandFather->right;
+    Node<Key> *currentNode = node;
+
+    // Case 1: if uncle is Red, switch the color of
+    if (uncle == nullptr || uncle->color == Color::BLACK) {
+
+//        // if is Left-Left
+//        if (grandFather->left->left == node) {
+//
+////            rotateRight(node);
+//
+//        // if Right-Right
+//        } else if (grandFather->right->right == node) {
+//
+//
+//        // if Right-Left
+//        } else if (grandFather->right->left == node) {
+//
+//
+//        // If Left-Right
+//        } else {
+////            rotateLeft(node);
+////            rotateRight(node);
+//        }
+
+    } else if (uncle->color == Color::RED) {
+        uncle->color = Color::BLACK;
+        father->color = Color::BLACK;
+    }
+//    if (uncle == nullptr)
+
+
 }
 
 template<typename Key>
@@ -237,10 +273,6 @@ void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
 
     Node<Key> *temp = node;
     Node<Key> *parent = node->parent;
-
-
-
-
 }
 
 template<typename Key>
