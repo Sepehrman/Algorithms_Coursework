@@ -33,26 +33,33 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
 template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
 
-    // TODO: Add implementation for parent node?
-//    Node<Key>* currentNode = root;
-//    Node<Key>* parent = nullptr;
 
-    if (root == nullptr) {
-        root = new Node<Key>(key);
-        root->color = Color::BLACK;
-        setSize++;
-        return true;
+    Node<Key>* parent = nullptr;
+    Node<Key>* current = root;
+    while (current != nullptr) {
+        parent = current;
+        if (key < current->key)
+            current = current->left;
+        else if (key > current->key)
+            current = current->right;
+        else { // Key already exists
+            return false;
+        }
     }
 
-    if (key < root->key) {
-        root = root->left;
-        insert(key);
-    }
+    Node<Key> *newNode = new Node<Key>(key);
 
-    if (key > root->key) {
-        root = root->right;
-        insert(key);
-    }
+    newNode->parent = parent;
+    if (parent == nullptr)
+        root = newNode;
+    else if (key < parent->key)
+        parent->left = newNode;
+    else
+        parent->right = newNode;
+
+    ++setSize;
+
+//    fixRedRedViolation(newNode);
 
     return true;
 }
@@ -68,14 +75,23 @@ bool UnorderedSet<Key>::search(const Key &key) const {
         return true;
     }
 
+    Node<Key>* parent = nullptr;
+    Node<Key>* current = root;
+
     if (key < root->key) {
-        root = root->left;
+
     }
 
-    if (key > root->key) {
-        root = root->right;
-    }
-    search(key);
+
+//
+//    if (key < root->key) {
+//        root = root->left;
+//    }
+//
+//    if (key > root->key) {
+//        root = root->right;
+//    }
+//    search(key);
 }
 
 
