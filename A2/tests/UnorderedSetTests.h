@@ -19,6 +19,7 @@ std::pair<int, int> unorderedSetTestForBookDataStructure() {
     passedTests += a_assert(bookSet.size() == 2);
     passedTests += a_assert(bookSet.search(env.book1));
     passedTests += a_assert(!bookSet.search(env.book3));
+    // Passed Tests: 3 by Here
     bookSet.erase(env.book1);
     passedTests += a_assert(bookSet.size() == 1);
     bookSet.insert(env.book2);

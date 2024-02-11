@@ -67,31 +67,23 @@ bool UnorderedSet<Key>::insert(const Key &key) {
 template<typename Key>
 bool UnorderedSet<Key>::search(const Key &key) const {
 
-    if (&key == nullptr) {
-        return false;
-    }
-
     if (root->key == key) {
         return true;
     }
 
-    Node<Key>* parent = nullptr;
     Node<Key>* current = root;
 
-    if (key < root->key) {
-
+    while (current != nullptr) {
+        if (current->key < key) {
+            current = current->left;
+        } else if (current->key > key) {
+            current = current->right;
+        } else {
+            return true;
+        }
     }
 
-
-//
-//    if (key < root->key) {
-//        root = root->left;
-//    }
-//
-//    if (key > root->key) {
-//        root = root->right;
-//    }
-//    search(key);
+    return false;
 }
 
 
