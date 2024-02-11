@@ -28,8 +28,6 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
 
 }
 
-
-
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
     return UnorderedSet<Key>::Iterator(nullptr);
@@ -63,8 +61,7 @@ bool UnorderedSet<Key>::insert(const Key &key) {
     } else if (key < parent->key) {
         newNode->color = Color::RED;
         parent->left = newNode;
-    }
-    else {
+    } else {
         newNode->color = Color::RED;
         parent->right = newNode;
     }
@@ -86,9 +83,9 @@ bool UnorderedSet<Key>::search(const Key &key) const {
     Node<Key>* current = root;
 
     while (current != nullptr) {
-        if (current->key < key) {
+        if (key < current->key) {
             current = current->left;
-        } else if (current->key > key) {
+        } else if (key >current->key) {
             current = current->right;
         } else {
             return true;
@@ -101,45 +98,82 @@ bool UnorderedSet<Key>::search(const Key &key) const {
 
 template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
-
     Node<Key> *current = root;
+    Node<Key> *parent = nullptr;
     Node<Key> *nodeToDelete = nullptr;
 
-
-    // TODO: Handle if root node is deleted. Do a rotation?
-    // TODO: Also consider the blue colors
-
-    bool isFound = false;
-
+    // Search for the node to delete
     while (current != nullptr) {
         if (key < current->key) {
+            parent = current;
             current = current->left;
         } else if (key > current->key) {
+            parent = current;
             current = current->right;
         } else {
-            isFound = true;
             nodeToDelete = current;
             break;
         }
     }
 
-    if (isFound) {
-
-//        if (nodeToDelete->color == Color::RED) {
-//            // DELETE then exit.
-//            return true;
-//        } else if (nodeToDelete->color == Color::BLACK && nodeToDelete->left == nullptr && nodeToDelete->right== nullptr) {
-//            nodeToDelete->key == nullptr;
-//            nodeToDelete->color == Color::BLUE;
-//        }
+    if (nodeToDelete == nullptr) {
+        return false;
     }
 
+    // Case 1: Node to delete has no children
+    if (nodeToDelete->left == nullptr && nodeToDelete->right == nullptr) {
+        if (parent == nullptr) {
+            root = nullptr;
+        } else if (parent->left == nodeToDelete) {
+            parent->left = nullptr;
+        } else {
+            parent->right = nullptr;
+        }
+        delete nodeToDelete;
+    }
 
-    return isFound;
+        // Case 2: Node to delete has one child
+    else if (nodeToDelete->left == nullptr || nodeToDelete->right == nullptr) {
+        Node<Key> *child = (nodeToDelete->left != nullptr) ? nodeToDelete->left : nodeToDelete->right;
+        if (parent == nullptr) {
+            // Node to delete is the root
+            root = child;
+        } else if (parent->left == nodeToDelete) {
+            parent->left = child;
+        } else {
+            parent->right = child;
+        }
+        delete nodeToDelete;
 
+        // If the node to delete has no child, simply delete it
+        // If it has one child, the child takes its place, so we delete the nodeToDelete
+    }
 
-//    while (current->key)
+        // Case 3: Node to delete has two children
+    else {
+        Node<Key> *successor = nodeToDelete->right;
+        parent = nullptr;
+        while (successor->left != nullptr) {
+            parent = successor;
+            successor = successor->left;
+        }
+
+        // Replace nodeToDelete with successor
+        nodeToDelete->key = successor->key;
+
+        // Delete the successor node
+        if (parent != nullptr) {
+            parent->left = nullptr;
+        } else {
+            nodeToDelete->right = nullptr;
+        }
+        delete successor;
+    }
+
+    --setSize;
+    return true;
 }
+
 
 template<typename Key>
 void UnorderedSet<Key>::clear() {
@@ -180,6 +214,12 @@ void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
 
 template<typename Key>
 void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
+
+    Node<Key> *temp = node;
+    Node<Key> *parent = node->parent;
+
+
+
 
 }
 
