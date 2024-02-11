@@ -85,7 +85,7 @@ bool UnorderedSet<Key>::search(const Key &key) const {
     while (current != nullptr) {
         if (key < current->key) {
             current = current->left;
-        } else if (key >current->key) {
+        } else if (key > current->key) {
             current = current->right;
         } else {
             return true;
