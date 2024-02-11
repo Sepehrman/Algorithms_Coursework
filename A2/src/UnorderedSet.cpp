@@ -138,6 +138,8 @@ bool UnorderedSet<Key>::erase(const Key &key) {
 template<typename Key>
 void UnorderedSet<Key>::clear() {
 
+    root = nullptr;
+    setSize = 0;
 }
 
 template<typename Key>
