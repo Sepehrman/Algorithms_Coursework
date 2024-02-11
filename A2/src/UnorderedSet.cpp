@@ -7,17 +7,28 @@
 
 using namespace std;
 
+/*
+ * A constructor for our Unordered Red-Black-Tree Set
+ */
 template<typename Key>
 UnorderedSet<Key>::UnorderedSet() {
     root = nullptr;
     setSize = 0;
 }
 
+/*
+ * A destructor for our Unordered Red-Black-Tree Set
+ */
 template<typename Key>
 UnorderedSet<Key>::~UnorderedSet() {
     clear();
 }
 
+/**
+ * This method returns the left-most element of our tree until until-before it reaches a nullptr
+ * @tparam Key a Generic parameter of Type Key
+ * @return an Iterator
+ */
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
 //    return UnorderedSet<Key>::Iterator(root);
@@ -28,17 +39,26 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
     return Iterator(current);
 }
 
+/**
+ * This method returns the end of our tree until until-before, signifying past the last element which is a nullptr
+ * @tparam Key a Generic parameter of Type Key
+ * @return an Iterator
+ */
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
     return UnorderedSet<Key>::Iterator(nullptr);
 }
 
-
+/**
+ * The following method is responsible for adding a Key element to our Tree.
+ * @tparam Key a Generic parameter of Type Key
+ * @param key An object of type Key that we are planning to insert into our tree
+ * @return a Boolean; indicating whether the item already exists or not
+ */
 template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
 
-
-    // TODO: Set colors for red/black trees
+    // TODO: Add what code does
     Node<Key>* parent = nullptr;
     Node<Key>* current = root;
     while (current != nullptr) {
