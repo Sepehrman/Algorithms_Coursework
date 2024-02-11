@@ -1,6 +1,8 @@
-//
-// Created by Sepeh on 2024-02-07.
-//
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
+
 
 #include "../include/BookRecommendation.h"
 

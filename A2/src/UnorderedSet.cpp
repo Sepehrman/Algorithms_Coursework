@@ -1,6 +1,7 @@
-//
-// Created by Sepeh on 2024-02-07.
-//
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
 
 #include "../include/UnorderedSet.h"
 
@@ -25,7 +26,6 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
         current = current->left;
     }
     return Iterator(current);
-
 }
 
 template<typename Key>
