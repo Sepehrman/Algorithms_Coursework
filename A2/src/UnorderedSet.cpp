@@ -34,6 +34,7 @@ template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
 
 
+    // TODO: Set colors for red/black trees
     Node<Key>* parent = nullptr;
     Node<Key>* current = root;
     while (current != nullptr) {
@@ -89,7 +90,13 @@ bool UnorderedSet<Key>::search(const Key &key) const {
 
 template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
-    return false;
+
+    Node<Key> *current = root;
+
+    // TODO: Handle if root node is deleted. Do a rotation?
+    // TODO: Also consider the blue colors
+
+    while (current->key)
 }
 
 template<typename Key>
@@ -104,7 +111,6 @@ size_t UnorderedSet<Key>::size() const {
 
 template<typename Key>
 void UnorderedSet<Key>::updateSize() {
-
 }
 
 template<typename Key>
