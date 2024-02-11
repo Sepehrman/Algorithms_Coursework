@@ -51,12 +51,17 @@ bool UnorderedSet<Key>::insert(const Key &key) {
     Node<Key> *newNode = new Node<Key>(key);
 
     newNode->parent = parent;
-    if (parent == nullptr)
+    if (parent == nullptr) {
+        newNode->color = Color::BLACK;
         root = newNode;
-    else if (key < parent->key)
+    } else if (key < parent->key) {
+        newNode->color = Color::RED;
         parent->left = newNode;
-    else
+    }
+    else {
+        newNode->color = Color::RED;
         parent->right = newNode;
+    }
 
     ++setSize;
 
@@ -92,11 +97,42 @@ template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
 
     Node<Key> *current = root;
+    Node<Key> *nodeToDelete = nullptr;
+
 
     // TODO: Handle if root node is deleted. Do a rotation?
     // TODO: Also consider the blue colors
 
-    while (current->key)
+    bool isFound = false;
+
+    while (current != nullptr) {
+        if (key < current->key) {
+            current = current->left;
+        } else if (key > current->key) {
+            current = current->right;
+        } else {
+            isFound = true;
+            nodeToDelete = current;
+            break;
+        }
+    }
+
+    if (isFound) {
+
+//        if (nodeToDelete->color == Color::RED) {
+//            // DELETE then exit.
+//            return true;
+//        } else if (nodeToDelete->color == Color::BLACK && nodeToDelete->left == nullptr && nodeToDelete->right== nullptr) {
+//            nodeToDelete->key == nullptr;
+//            nodeToDelete->color == Color::BLUE;
+//        }
+    }
+
+
+    return isFound;
+
+
+//    while (current->key)
 }
 
 template<typename Key>
@@ -111,6 +147,7 @@ size_t UnorderedSet<Key>::size() const {
 
 template<typename Key>
 void UnorderedSet<Key>::updateSize() {
+
 }
 
 template<typename Key>
