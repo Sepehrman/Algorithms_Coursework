@@ -19,7 +19,13 @@ UnorderedSet<Key>::~UnorderedSet() {
 
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
-    return UnorderedSet<Key>::Iterator(root);
+//    return UnorderedSet<Key>::Iterator(root);
+    Node<Key>* current = root;
+    while (current != nullptr && current->left != nullptr) {
+        current = current->left;
+    }
+    return Iterator(current);
+
 }
 
 
