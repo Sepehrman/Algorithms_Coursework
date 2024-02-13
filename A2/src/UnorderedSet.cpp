@@ -230,24 +230,22 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
     // Case 1: if uncle is Red, switch the color of
     if (uncle == nullptr || uncle->color == Color::BLACK) {
 
-//        // if is Left-Left
-//        if (grandFather->left->left == node) {
-//
-////            rotateRight(node);
-//
-//        // if Right-Right
-//        } else if (grandFather->right->right == node) {
-//
-//
-//        // if Right-Left
-//        } else if (grandFather->right->left == node) {
-//
-//
-//        // If Left-Right
-//        } else {
-////            rotateLeft(node);
-////            rotateRight(node);
-//        }
+        // if is Left-Left
+        if (grandFather->left != nullptr && grandFather->left->left == node) {
+            rotateRight(node->parent);
+        }
+        // if Right-Right
+        else if (grandFather->right != nullptr && grandFather->right->right == node) {
+            rotateLeft(node->parent);
+        }
+        // if Right-Left
+        else if (grandFather->right != nullptr && grandFather->right->left == node) {
+            // Perform appropriate rotations here
+        }
+        // If Left-Right
+        else if (grandFather->left != nullptr && grandFather->left->right == node) {
+            // Perform appropriate rotations here
+        }
 
     } else if (uncle->color == Color::RED) {
         uncle->color = Color::BLACK;
@@ -260,12 +258,42 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
 
 template<typename Key>
 void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
+    if (node == nullptr || node->right == nullptr)
+        return; // Cannot rotate if the node or its right child is null
 
+    Node<Key> *pivot = node->right;
+    node->right = pivot->left;
+    if (pivot->left != nullptr)
+        pivot->left->parent = node;
+    pivot->parent = node->parent;
+    if (node->parent == nullptr)
+        root = pivot;
+    else if (node == node->parent->left)
+        node->parent->left = pivot;
+    else
+        node->parent->right = pivot;
+    pivot->left = node;
+    node->parent = pivot;
 }
 
 template<typename Key>
 void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
+    if (node == nullptr || node->left == nullptr)
+        return; // Cannot rotate if the node or its left child is null
 
+    Node<Key> *pivot = node->left;
+    node->left = pivot->right;
+    if (pivot->right != nullptr)
+        pivot->right->parent = node;
+    pivot->parent = node->parent;
+    if (node->parent == nullptr)
+        root = pivot;
+    else if (node == node->parent->left)
+        node->parent->left = pivot;
+    else
+        node->parent->right = pivot;
+    pivot->right = node;
+    node->parent = pivot;
 }
 
 template<typename Key>
