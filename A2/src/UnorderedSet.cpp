@@ -332,61 +332,6 @@ void UnorderedSet<Key>::deleteOneChild(Node<Key>* node) {
 
 template<typename Key>
 void UnorderedSet<Key>::deleteFix(Node<Key>* node) {
-    while (node != root && (node == nullptr || node->color == Color::BLACK)) {
-        if (node == node->parent->left) {
-            Node<Key>* sibling = node->parent->right;
-            if (sibling->color == Color::RED) {
-                sibling->color = Color::BLACK;
-                node->parent->color = Color::RED;
-                rotateLeft(node->parent);
-                sibling = node->parent->right;
-            }
-            if ((sibling->left == nullptr || sibling->left->color == Color::BLACK) &&
-                (sibling->right == nullptr || sibling->right->color == Color::BLACK)) {
-                sibling->color = Color::RED;
-                node = node->parent;
-            } else {
-                if (sibling->right == nullptr || sibling->right->color == Color::BLACK) {
-                    sibling->left->color = Color::BLACK;
-                    sibling->color = Color::RED;
-                    rotateRight(sibling);
-                    sibling = node->parent->right;
-                }
-                sibling->color = node->parent->color;
-                node->parent->color = Color::BLACK;
-                sibling->right->color = Color::BLACK;
-                rotateLeft(node->parent);
-                node = root;
-            }
-        } else {
-            Node<Key>* sibling = node->parent->left;
-            if (sibling->color == Color::RED) {
-                sibling->color = Color::BLACK;
-                node->parent->color = Color::RED;
-                rotateRight(node->parent);
-                sibling = node->parent->left;
-            }
-            if ((sibling->right == nullptr || sibling->right->color == Color::BLACK) &&
-                (sibling->left == nullptr || sibling->left->color == Color::BLACK)) {
-                sibling->color = Color::RED;
-                node = node->parent;
-            } else {
-                if (sibling->left == nullptr || sibling->left->color == Color::BLACK) {
-                    sibling->right->color = Color::BLACK;
-                    sibling->color = Color::RED;
-                    rotateLeft(sibling);
-                    sibling = node->parent->left;
-                }
-                sibling->color = node->parent->color;
-                node->parent->color = Color::BLACK;
-                sibling->left->color = Color::BLACK;
-                rotateRight(node->parent);
-                node = root;
-            }
-        }
-    }
-    if (node != nullptr)
-        node->color = Color::BLACK;
 }
 
 template<typename Key>
