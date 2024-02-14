@@ -118,6 +118,7 @@ bool UnorderedSet<Key>::search(const Key &key) const {
 }
 
 
+
 template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
     Node<Key> *current = root;
@@ -158,7 +159,6 @@ bool UnorderedSet<Key>::erase(const Key &key) {
     else if (nodeToDelete->left == nullptr || nodeToDelete->right == nullptr) {
         Node<Key> *child = (nodeToDelete->left != nullptr) ? nodeToDelete->left : nodeToDelete->right;
         if (parent == nullptr) {
-            // Node to delete is the root
             root = child;
         } else if (parent->left == nodeToDelete) {
             parent->left = child;
@@ -166,9 +166,6 @@ bool UnorderedSet<Key>::erase(const Key &key) {
             parent->right = child;
         }
         delete nodeToDelete;
-
-        // If the node to delete has no child, simply delete it
-        // If it has one child, the child takes its place, so we delete the nodeToDelete
     }
 
         // Case 3: Node to delete has two children
@@ -196,10 +193,8 @@ bool UnorderedSet<Key>::erase(const Key &key) {
     return true;
 }
 
-
 template<typename Key>
 void UnorderedSet<Key>::clear() {
-
     root = nullptr;
     setSize = 0;
 }
@@ -220,92 +215,175 @@ size_t UnorderedSet<Key>::getSize(Node<Key> *node) const {
 }
 
 template<typename Key>
-void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
+void UnorderedSet<Key>::fixRedRedViolation(Node<Key>* node) {
+    while (node != root && node->parent->color == Color::RED) {
+        Node<Key>* parent = node->parent;
+        Node<Key>* grandparent = parent->parent;
 
-    Node<Key> *father = node->parent;
-    Node<Key> *grandFather = father->parent;
-    Node<Key> *uncle = grandFather->left != father ? grandFather->left : grandFather->right;
-    Node<Key> *currentNode = node;
+        // Case 1: Parent is a left child of grandparent
+        if (parent == grandparent->left) {
+            Node<Key>* uncle = grandparent->right;
 
-    // Case 1: if uncle is Red, switch the color of
-    if (uncle == nullptr || uncle->color == Color::BLACK) {
+            // Case 1a: Uncle is also red, recoloring
+            if (uncle != nullptr && uncle->color == Color::RED) {
+                parent->color = Color::BLACK;
+                uncle->color = Color::BLACK;
+                grandparent->color = Color::RED;
+                node = grandparent;
+            } else {
+                // Case 1b: Uncle is black or null, rotation needed
+                if (node == parent->right) {
+                    // Case 1b-i: Node is a right child, left rotation needed
+                    node = parent;
+                    rotateLeft(node);
+                    parent = node->parent;
+                }
 
-        // if is Left-Left
-        if (grandFather->left != nullptr && grandFather->left->left == node) {
-            rotateRight(node->parent);
-        }
-        // if Right-Right
-        else if (grandFather->right != nullptr && grandFather->right->right == node) {
-            rotateLeft(node->parent);
-        }
-        // if Right-Left
-        else if (grandFather->right != nullptr && grandFather->right->left == node) {
-            // Perform appropriate rotations here
-        }
-        // If Left-Right
-        else if (grandFather->left != nullptr && grandFather->left->right == node) {
-            // Perform appropriate rotations here
-        }
+                // Case 1b-ii: Node is a left child, right rotation needed
+                parent->color = Color::BLACK;
+                grandparent->color = Color::RED;
+                rotateRight(grandparent);
+            }
+        } else { // Case 2: Parent is a right child of grandparent (symmetrical to case 1)
+            Node<Key>* uncle = grandparent->left;
 
-    } else if (uncle->color == Color::RED) {
-        uncle->color = Color::BLACK;
-        father->color = Color::BLACK;
+            // Case 2a: Uncle is also red, recoloring
+            if (uncle != nullptr && uncle->color == Color::RED) {
+                parent->color = Color::BLACK;
+                uncle->color = Color::BLACK;
+                grandparent->color = Color::RED;
+                node = grandparent;
+            } else {
+                // Case 2b: Uncle is black or null, rotation needed
+                if (node == parent->left) {
+                    // Case 2b-i: Node is a left child, right rotation needed
+                    node = parent;
+                    rotateRight(node);
+                    parent = node->parent;
+                }
+
+                // Case 2b-ii: Node is a right child, left rotation needed
+                parent->color = Color::BLACK;
+                grandparent->color = Color::RED;
+                rotateLeft(grandparent);
+            }
+        }
     }
-//    if (uncle == nullptr)
-
-
+    root->color = Color::BLACK; // Ensure root is always black
 }
 
 template<typename Key>
-void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
-    if (node == nullptr || node->right == nullptr)
-        return; // Cannot rotate if the node or its right child is null
+void UnorderedSet<Key>::rotateLeft(Node<Key>* node) {
+    Node<Key>* rightChild = node->right;
+    node->right = rightChild->left;
+    if (rightChild->left != nullptr) {
+        rightChild->left->parent = node;
+    }
+    rightChild->parent = node->parent;
+    if (node->parent == nullptr) {
+        root = rightChild;
+    } else if (node == node->parent->left) {
+        node->parent->left = rightChild;
+    } else {
+        node->parent->right = rightChild;
+    }
+    rightChild->left = node;
+    node->parent = rightChild;
+}
 
-    Node<Key> *pivot = node->right;
-    node->right = pivot->left;
-    if (pivot->left != nullptr)
-        pivot->left->parent = node;
-    pivot->parent = node->parent;
-    if (node->parent == nullptr)
-        root = pivot;
-    else if (node == node->parent->left)
-        node->parent->left = pivot;
-    else
-        node->parent->right = pivot;
-    pivot->left = node;
-    node->parent = pivot;
+// Rotate Right operation
+template<typename Key>
+void UnorderedSet<Key>::rotateRight(Node<Key>* node) {
+    Node<Key>* leftChild = node->left;
+    node->left = leftChild->right;
+    if (leftChild->right != nullptr) {
+        leftChild->right->parent = node;
+    }
+    leftChild->parent = node->parent;
+    if (node->parent == nullptr) {
+        root = leftChild;
+    } else if (node == node->parent->right) {
+        node->parent->right = leftChild;
+    } else {
+        node->parent->left = leftChild;
+    }
+    leftChild->right = node;
+    node->parent = leftChild;
+}
+
+
+template<typename Key>
+void UnorderedSet<Key>::deleteOneChild(Node<Key>* node) {
+    Node<Key>* child = (node->left != nullptr) ? node->left : node->right;
+    if (node->parent == nullptr) {
+        root = child;
+    } else if (node == node->parent->left) {
+        node->parent->left = child;
+    } else {
+        node->parent->right = child;
+    }
+    if (child != nullptr) {
+        child->parent = node->parent;
+    }
 }
 
 template<typename Key>
-void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
-    if (node == nullptr || node->left == nullptr)
-        return; // Cannot rotate if the node or its left child is null
-
-    Node<Key> *pivot = node->left;
-    node->left = pivot->right;
-    if (pivot->right != nullptr)
-        pivot->right->parent = node;
-    pivot->parent = node->parent;
-    if (node->parent == nullptr)
-        root = pivot;
-    else if (node == node->parent->left)
-        node->parent->left = pivot;
-    else
-        node->parent->right = pivot;
-    pivot->right = node;
-    node->parent = pivot;
-}
-
-template<typename Key>
-void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
-
-    Node<Key> *temp = node;
-    Node<Key> *parent = node->parent;
-}
-
-template<typename Key>
-void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
-
+void UnorderedSet<Key>::deleteFix(Node<Key>* node) {
+    while (node != root && (node == nullptr || node->color == Color::BLACK)) {
+        if (node == node->parent->left) {
+            Node<Key>* sibling = node->parent->right;
+            if (sibling->color == Color::RED) {
+                sibling->color = Color::BLACK;
+                node->parent->color = Color::RED;
+                rotateLeft(node->parent);
+                sibling = node->parent->right;
+            }
+            if ((sibling->left == nullptr || sibling->left->color == Color::BLACK) &&
+                (sibling->right == nullptr || sibling->right->color == Color::BLACK)) {
+                sibling->color = Color::RED;
+                node = node->parent;
+            } else {
+                if (sibling->right == nullptr || sibling->right->color == Color::BLACK) {
+                    sibling->left->color = Color::BLACK;
+                    sibling->color = Color::RED;
+                    rotateRight(sibling);
+                    sibling = node->parent->right;
+                }
+                sibling->color = node->parent->color;
+                node->parent->color = Color::BLACK;
+                sibling->right->color = Color::BLACK;
+                rotateLeft(node->parent);
+                node = root;
+            }
+        } else {
+            Node<Key>* sibling = node->parent->left;
+            if (sibling->color == Color::RED) {
+                sibling->color = Color::BLACK;
+                node->parent->color = Color::RED;
+                rotateRight(node->parent);
+                sibling = node->parent->left;
+            }
+            if ((sibling->right == nullptr || sibling->right->color == Color::BLACK) &&
+                (sibling->left == nullptr || sibling->left->color == Color::BLACK)) {
+                sibling->color = Color::RED;
+                node = node->parent;
+            } else {
+                if (sibling->left == nullptr || sibling->left->color == Color::BLACK) {
+                    sibling->right->color = Color::BLACK;
+                    sibling->color = Color::RED;
+                    rotateLeft(sibling);
+                    sibling = node->parent->left;
+                }
+                sibling->color = node->parent->color;
+                node->parent->color = Color::BLACK;
+                sibling->left->color = Color::BLACK;
+                rotateRight(node->parent);
+                node = root;
+            }
+        }
+    }
+    if (node != nullptr)
+        node->color = Color::BLACK;
 }
 
 template<typename Key>
