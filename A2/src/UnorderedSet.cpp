@@ -317,17 +317,6 @@ void UnorderedSet<Key>::rotateRight(Node<Key>* node) {
 
 template<typename Key>
 void UnorderedSet<Key>::deleteOneChild(Node<Key>* node) {
-    Node<Key>* child = (node->left != nullptr) ? node->left : node->right;
-    if (node->parent == nullptr) {
-        root = child;
-    } else if (node == node->parent->left) {
-        node->parent->left = child;
-    } else {
-        node->parent->right = child;
-    }
-    if (child != nullptr) {
-        child->parent = node->parent;
-    }
 }
 
 template<typename Key>
