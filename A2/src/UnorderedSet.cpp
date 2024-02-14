@@ -90,8 +90,8 @@ bool UnorderedSet<Key>::insert(const Key &key) {
 
     if (newNode->color == Color::RED && newNode->parent->color == Color::RED) {
         fixRedRedViolation(newNode);
+        root->color = Color::BLACK;
     }
-
     return true;
 }
 
@@ -158,7 +158,9 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         // Case 2: Node to delete has one child
     else if (nodeToDelete->left == nullptr || nodeToDelete->right == nullptr) {
         Node<Key> *child = (nodeToDelete->left != nullptr) ? nodeToDelete->left : nodeToDelete->right;
+        // If parent is Null, means it is the root. Therefore turn it to Black.
         if (parent == nullptr) {
+            child->color = Color::BLACK;
             root = child;
         } else if (parent->left == nodeToDelete) {
             parent->left = child;
@@ -188,6 +190,7 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         }
         delete successor;
     }
+
 
     --setSize;
     return true;
