@@ -95,6 +95,12 @@ bool UnorderedSet<Key>::insert(const Key &key) {
     return true;
 }
 
+/**
+ * Searches the entire tree for a given key
+ * @tparam Key a Generic parameter of Type Key
+ * @param key An object of type Key; The key we are searching for
+ * @return whether the key is found or not within the tree
+ */
 template<typename Key>
 bool UnorderedSet<Key>::search(const Key &key) const {
 
@@ -191,31 +197,10 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         delete successor;
     }
 
-
     --setSize;
     return true;
 }
 
-template<typename Key>
-void UnorderedSet<Key>::clear() {
-    root = nullptr;
-    setSize = 0;
-}
-
-template<typename Key>
-size_t UnorderedSet<Key>::size() const {
-    return setSize;
-}
-
-template<typename Key>
-void UnorderedSet<Key>::updateSize() {
-
-}
-
-template<typename Key>
-size_t UnorderedSet<Key>::getSize(Node<Key> *node) const {
-    return setSize;
-}
 
 template<typename Key>
 void UnorderedSet<Key>::fixRedRedViolation(Node<Key>* node) {
@@ -314,6 +299,26 @@ void UnorderedSet<Key>::rotateRight(Node<Key>* node) {
     node->parent = leftChild;
 }
 
+template<typename Key>
+void UnorderedSet<Key>::clear() {
+    root = nullptr;
+    setSize = 0;
+}
+
+template<typename Key>
+size_t UnorderedSet<Key>::size() const {
+    return setSize;
+}
+
+template<typename Key>
+void UnorderedSet<Key>::updateSize() {
+
+}
+
+template<typename Key>
+size_t UnorderedSet<Key>::getSize(Node<Key> *node) const {
+    return setSize;
+}
 
 template<typename Key>
 void UnorderedSet<Key>::deleteOneChild(Node<Key>* node) {
@@ -325,5 +330,4 @@ void UnorderedSet<Key>::deleteFix(Node<Key>* node) {
 
 template<typename Key>
 void UnorderedSet<Key>::clearRecursive(Node<Key> *node) {
-
 }
