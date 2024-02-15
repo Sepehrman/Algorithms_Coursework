@@ -53,12 +53,14 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
  * The following method is responsible for adding a Key element to our Tree.
  * @tparam Key a Generic parameter of Type Key
  * @param key An object of type Key that we are planning to insert into our tree
- * @return a Boolean; indicating whether the item already exists or not
+ * @return a Boolean; indicating whether the item can be inserted or not (If the item exists)
  */
 template<typename Key>
 bool UnorderedSet<Key>::insert(const Key &key) {
 
-    // TODO: Add what code does
+    /* The following code starts from the root of our tree and goes down, based on whether our inserted key is
+     * higher (right) or lower (left) than the root. If upon searching we find the existing key, returns false.
+     */
     Node<Key>* parent = nullptr;
     Node<Key>* current = root;
     while (current != nullptr) {
@@ -72,8 +74,12 @@ bool UnorderedSet<Key>::insert(const Key &key) {
         }
     }
 
-    Node<Key> *newNode = new Node<Key>(key);
 
+    /* Creates a new Node to insert to the tree. If the tree's parent is null, it is assumed to be the root and sets
+     * the root as the new node, coloring it Black. If the key is smaller than or larger than the key's parent,
+     * sets the node on the left or right accordingly and colors it Red.
+     */
+    Node<Key> *newNode = new Node<Key>(key);
     newNode->parent = parent;
     if (parent == nullptr) {
         newNode->color = Color::BLACK;
@@ -86,9 +92,13 @@ bool UnorderedSet<Key>::insert(const Key &key) {
         parent->right = newNode;
     }
 
+    // Increases the size of the tree by 1
     ++setSize;
 
-    if (newNode->color == Color::RED && newNode->parent->color == Color::RED) {
+    /* Checks whether there are any red-red violations once the new node is added.
+     * Ensures that the root always remains Black.
+    */
+     if (newNode->color == Color::RED && newNode->parent->color == Color::RED) {
         fixRedRedViolation(newNode);
         root->color = Color::BLACK;
     }
@@ -96,20 +106,23 @@ bool UnorderedSet<Key>::insert(const Key &key) {
 }
 
 /**
- * Searches the entire tree for a given key
+ * Searches the entire tree for a given key and returns whether it exists, or not.
  * @tparam Key a Generic parameter of Type Key
  * @param key An object of type Key; The key we are searching for
- * @return whether the key is found or not within the tree
+ * @return a Boolean; Based on whether the key is found or not in the tree
  */
 template<typename Key>
 bool UnorderedSet<Key>::search(const Key &key) const {
 
+    // If the root equals the key, return true.
     if (root->key == key) {
         return true;
     }
 
+    /* Sets current node position to start from the root and goes down the tree until it reaches a null pointer.
+     * Changes the current node to the left or right child accordingly. If the current node equals the key, returns true.
+     */
     Node<Key>* current = root;
-
     while (current != nullptr) {
         if (key < current->key) {
             current = current->left;
@@ -120,18 +133,24 @@ bool UnorderedSet<Key>::search(const Key &key) const {
         }
     }
 
+    // Once the node reaches a null pointer, it moves out of the while loop and returns a false.
     return false;
 }
 
 
-
+/**
+ * The following method erases a key from our Tree
+ * @tparam Key a Generic parameter of Type Key
+ * @param key the key we would like to remove.
+ * @return a Boolean; Whether the key was successfully removed or not (i.e could not be found)
+ */
 template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
     Node<Key> *current = root;
     Node<Key> *parent = nullptr;
     Node<Key> *nodeToDelete = nullptr;
 
-    // Search for the node to delete
+    // Search for the node to delete and find it.
     while (current != nullptr) {
         if (key < current->key) {
             parent = current;
@@ -145,11 +164,12 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         }
     }
 
+    // If the node to delete does not exist, return false
     if (nodeToDelete == nullptr) {
         return false;
     }
 
-    // Case 1: Node to delete has no children
+    // If the Node we want to delete has no children
     if (nodeToDelete->left == nullptr && nodeToDelete->right == nullptr) {
         if (parent == nullptr) {
             root = nullptr;
