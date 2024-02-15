@@ -340,12 +340,21 @@ void UnorderedSet<Key>::rotateRight(Node<Key>* node) {
     node->parent = leftChild;
 }
 
+/**
+ * Clears the current tree by setting the root to null & the size of the tree to 0.
+ * @param node the basis of a node from the tree we want to rotate from
+ */
 template<typename Key>
 void UnorderedSet<Key>::clear() {
     root = nullptr;
     setSize = 0;
 }
 
+/**
+ * Gets the size of the current tree
+ * @tparam Key a Generic parameter of Type Key
+ * @return An Integer; representing the size of the tree.
+ */
 template<typename Key>
 size_t UnorderedSet<Key>::size() const {
     return setSize;
