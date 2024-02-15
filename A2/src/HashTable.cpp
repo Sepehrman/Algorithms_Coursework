@@ -9,18 +9,24 @@
 template<typename KeyType, typename ValueType>
 HashTable<KeyType, ValueType>::HashTable(unsigned int size, double threshold) {
     hashTable = std::vector<Bucket>();
-    tableSize = size;
+    hashTable.resize(size);
+    tableSize = 0;
     loadFactorThreshold = threshold;
+}
+
+template<typename KeyType, typename ValueType>
+void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
+    unsigned int index = hashKey(key) % tableSize;
+    hashTable[index] = value;
+
+
+    tableSize++;
+//    hashTable.insert(bucket.key, bucket);
 }
 
 
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType &key, ValueType newValue) {
-
-}
-
-template<typename KeyType, typename ValueType>
-void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
 
 }
 
@@ -41,7 +47,7 @@ void HashTable<KeyType, ValueType>::clear() {
 
 template<typename KeyType, typename ValueType>
 unsigned int HashTable<KeyType, ValueType>::size() const {
-    return 0;
+    return tableSize;
 }
 
 template<typename KeyType, typename ValueType>
@@ -75,3 +81,4 @@ template <typename KeyType, typename ValueType>
 typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::end() {
     return Iterator(hashTable.end(), hashTable.end());
 }
+
