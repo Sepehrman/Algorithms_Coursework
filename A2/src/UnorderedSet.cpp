@@ -169,7 +169,7 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         return false;
     }
 
-    // If the Node we want to delete has no children
+    // If the Node to delete has no children
     if (nodeToDelete->left == nullptr && nodeToDelete->right == nullptr) {
         if (parent == nullptr) {
             root = nullptr;
@@ -181,7 +181,7 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         delete nodeToDelete;
     }
 
-        // Case 2: Node to delete has one child
+    // If the Node to delete has one child
     else if (nodeToDelete->left == nullptr || nodeToDelete->right == nullptr) {
         Node<Key> *child = (nodeToDelete->left != nullptr) ? nodeToDelete->left : nodeToDelete->right;
         // If parent is Null, means it is the root. Therefore turn it to Black.
@@ -196,7 +196,7 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         delete nodeToDelete;
     }
 
-        // Case 3: Node to delete has two children
+    // If Node to delete has two children
     else {
         Node<Key> *successor = nodeToDelete->right;
         parent = nullptr;
@@ -217,71 +217,88 @@ bool UnorderedSet<Key>::erase(const Key &key) {
         delete successor;
     }
 
+    // Decrease the size of tree by 1.
     --setSize;
     return true;
 }
 
 
+/**
+ * The following method handles a fixture to any red-red violations occuring within our tree and modifies it accordingly
+ * Through checking for Red or Black uncles and judging on whether there should only be a color-switch and a rotation
+ * happening.
+ * @tparam Key a Generic parameter of Type Key
+ * @param node the newly added key we are trying to resolve
+ */
 template<typename Key>
 void UnorderedSet<Key>::fixRedRedViolation(Node<Key>* node) {
-    while (node != root && node->parent->color == Color::RED) {
+    // Step 1: Check if the node is not the root and the parent's color is red
         Node<Key>* parent = node->parent;
         Node<Key>* grandparent = parent->parent;
+        Node<Key>* uncle = grandparent->right;
 
-        // Case 1: Parent is a left child of grandparent
+        // Parent is a left child of grandparent
         if (parent == grandparent->left) {
-            Node<Key>* uncle = grandparent->right;
 
-            // Case 1a: Uncle is also red, recoloring
+            // Uncle is red, Only do color switch.
             if (uncle != nullptr && uncle->color == Color::RED) {
                 parent->color = Color::BLACK;
                 uncle->color = Color::BLACK;
                 grandparent->color = Color::RED;
-                node = grandparent;
+
+                // Uncle is Black/Null, therefore do rotation & color switch
             } else {
-                // Case 1b: Uncle is black or null, rotation needed
+
+                // Node is Right child, therefore do a single left rotation. (RR Case)
                 if (node == parent->right) {
-                    // Case 1b-i: Node is a right child, left rotation needed
                     node = parent;
                     rotateLeft(node);
                     parent = node->parent;
                 }
 
-                // Case 1b-ii: Node is a left child, right rotation needed
+                // Node is left child, do a right rotation (RL Case) and switches color of parent & grandparent
                 parent->color = Color::BLACK;
                 grandparent->color = Color::RED;
                 rotateRight(grandparent);
             }
-        } else { // Case 2: Parent is a right child of grandparent (symmetrical to case 1)
-            Node<Key>* uncle = grandparent->left;
 
-            // Case 2a: Uncle is also red, recoloring
+            // Parent is a right child of grandparent
+        } else {
+
+            Node<Key>* uncle = grandparent->left;
+            // Uncle is red, Only do color switch.
             if (uncle != nullptr && uncle->color == Color::RED) {
                 parent->color = Color::BLACK;
                 uncle->color = Color::BLACK;
                 grandparent->color = Color::RED;
-                node = grandparent;
+
+            // Uncle is Black/Null, therefore do rotation & color switch
             } else {
-                // Case 2b: Uncle is black or null, rotation needed
+
+
+                // Node is a left child, right rotation needed (RL Case)
                 if (node == parent->left) {
-                    // Case 2b-i: Node is a left child, right rotation needed
                     node = parent;
                     rotateRight(node);
                     parent = node->parent;
                 }
 
-                // Case 2b-ii: Node is a right child, left rotation needed
+                // Node is a right child, left rotation needed. switches color of parent & grandparent
                 parent->color = Color::BLACK;
                 grandparent->color = Color::RED;
                 rotateLeft(grandparent);
             }
         }
-    }
-    root->color = Color::BLACK; // Ensure root is always black
 }
 
+/**
+ * The following function does a left rotation on a tree that has had a red-red violation
+ * @tparam Key a Generic parameter of Type Key
+ * @param node the basis of a node from the tree we want to rotate from
+ */
 template<typename Key>
 void UnorderedSet<Key>::rotateLeft(Node<Key>* node) {
+    //
     Node<Key>* rightChild = node->right;
     node->right = rightChild->left;
     if (rightChild->left != nullptr) {
@@ -299,7 +316,11 @@ void UnorderedSet<Key>::rotateLeft(Node<Key>* node) {
     node->parent = rightChild;
 }
 
-// Rotate Right operation
+/**
+ * The following function does a right rotation on a tree that has had a red-red violation
+ * @tparam Key a Generic parameter of Type Key
+ * @param node the basis of a node from the tree we want to rotate from
+ */
 template<typename Key>
 void UnorderedSet<Key>::rotateRight(Node<Key>* node) {
     Node<Key>* leftChild = node->left;
