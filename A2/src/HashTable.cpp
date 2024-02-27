@@ -23,17 +23,20 @@ HashTable<KeyType, ValueType>::HashTable(unsigned int size, double threshold) {
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
     unsigned int index = std::hash<KeyType>{}(key) % tableSize;
-    hashTable.insert(key, value);
-//    hashTable[index] = value;
+    if (!hashTable[index].occupied) {
+        hashTable[index].key = key;
+        hashTable[index].value = value;
+        hashTable[index].occupied = true;
+    }
 
     tableSize++;
 }
 
 
-template<typename KeyType>
-unsigned int hashKey(const KeyType& key, unsigned int tableSize) {
-    return std::hash<KeyType>{}(key) % tableSize;
-}
+//template<typename KeyType>
+//unsigned int hashKey(const KeyType& key, unsigned int tableSize) {
+//    return std::hash<KeyType>{}(key) % tableSize;
+//}
 
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType &key, ValueType newValue) {
