@@ -6,32 +6,33 @@
 
 #include "../include/HashTable.h"
 
-template<typename KeyType>
-unsigned int hashKey(const KeyType& key); // Forward declaration
+//template<typename KeyType>
+//unsigned int hashKey(const KeyType& key, int tableSize); // Forward declaration
 
 
 template<typename KeyType, typename ValueType>
 HashTable<KeyType, ValueType>::HashTable(unsigned int size, double threshold) {
     hashTable = std::vector<Bucket>();
-    hashTable.resize(size);
-    tableSize = 0;
+    tableSize = size;
     loadFactorThreshold = threshold;
 }
 
+
+
+
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
-    unsigned int index = hashKey(key) % tableSize;
+    unsigned int index = std::hash<KeyType>{}(key) % tableSize;
+    hashTable.insert(key, value);
 //    hashTable[index] = value;
 
-
     tableSize++;
-//    hashTable.insert(bucket.key, bucket);
 }
 
+
 template<typename KeyType>
-unsigned int hashKey(const KeyType& key) {
-    // Example: simple hash function for string keys
-    return key - 'a';
+unsigned int hashKey(const KeyType& key, unsigned int tableSize) {
+    return std::hash<KeyType>{}(key) % tableSize;
 }
 
 template<typename KeyType, typename ValueType>
