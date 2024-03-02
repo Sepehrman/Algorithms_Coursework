@@ -25,11 +25,19 @@ HashTable<KeyType, ValueType>::HashTable(unsigned int size, double threshold) {
     loadFactorThreshold = threshold;
 }
 
+/**
+ * An interator responsible for returning an element at the beginning of our hashtable
+ * @return a hashtable interable that returns the beginning of our hashtable
+ */
 template<typename KeyType, typename ValueType>
 typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::begin() {
     return Iterator(hashTable.begin(), hashTable.end());
 }
 
+/**
+ * An interator responsible for returning an element at the end of our hashtable
+ * @return a hashtable interable that returns the end of our hashtable
+ */
 template<typename KeyType, typename ValueType>
 typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::end() {
     return Iterator(hashTable.end(), hashTable.end());
