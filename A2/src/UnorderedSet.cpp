@@ -359,25 +359,3 @@ template<typename Key>
 size_t UnorderedSet<Key>::size() const {
     return setSize;
 }
-
-template<typename Key>
-void UnorderedSet<Key>::updateSize() {
-
-}
-
-template<typename Key>
-size_t UnorderedSet<Key>::getSize(Node<Key> *node) const {
-    return setSize;
-}
-
-template<typename Key>
-void UnorderedSet<Key>::deleteOneChild(Node<Key>* node) {
-}
-
-template<typename Key>
-void UnorderedSet<Key>::deleteFix(Node<Key>* node) {
-}
-
-template<typename Key>
-void UnorderedSet<Key>::clearRecursive(Node<Key> *node) {
-}
