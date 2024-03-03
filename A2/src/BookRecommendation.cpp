@@ -4,7 +4,6 @@
  */
 
 #include "../include/BookRecommendation.h"
-#include <algorithm>
 
 void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
     UnorderedSet<Book>* borrowedBooks = userBorrowedBooks.search(userID.ID);
@@ -27,53 +26,52 @@ void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
 }
 
 
-std::vector<Book> BookRecommendation::getBookRecommendations(const std::string &targetUserID, int numRecommendations,
-                                                             int neighborhoodSize) {
+std::vector<Book> BookRecommendation::getBookRecommendations(const std::string &targetUserID,
+                                                             int numRecommendations, int neighborhoodSize) {
     UnorderedSet<std::string> neighbourhood = getNeighborhood(targetUserID, neighborhoodSize);
+    UnorderedSet<Book> initRecommendations = getRecommendedBooks(neighbourhood, targetUserID);
 
-    UnorderedSet<Book> initialRecs = getRecommendedBooks(neighbourhood, targetUserID);
-    std::vector<Book> finalRecommendations = std::vector<Book>();
+    std::vector<Book> finalRecommendations;
+    finalRecommendations.reserve(numRecommendations); // Reserve space to avoid unnecessary reallocation
 
-    int i = 0;
-    for (const Book& bk : initialRecs) {
-        if (i == numRecommendations)
-            break;
-        finalRecommendations.emplace_back(bk);
+    UnorderedSet<Book>::Iterator it = initRecommendations.begin();
+    for (int i = 0; i < numRecommendations && it != initRecommendations.end(); ++i, ++it) {
+        finalRecommendations.push_back(std::move(*it));
     }
-
     return finalRecommendations;
 }
 
 UnorderedSet<Book> BookRecommendation::getRecommendedBooks(const UnorderedSet<std::string> &neighborhood,
                                                            const std::string &targetUserID) {
-    Stack<std::string> patronStack = Stack<std::string>();
-    HashTable<std::string, int> frequencyMap = HashTable<std::string, int>();
+    Stack<std::string> patronStack;
+    std::unordered_map<std::string, int> frequencyMap;
+    UnorderedSet<Book> recommendedBooks;
+
     UnorderedSet<Book>* targetUserBooks = userBorrowedBooks.search(targetUserID);
-
     if (!targetUserBooks)
-        throw std::runtime_error("User has to have borrowed books to have neighbours.");
+        throw std::runtime_error("Error: User must have borrowed books");
 
-    UnorderedSet<Book> recommendedBooks = UnorderedSet<Book>();
-
-    for (const std::string patronID : neighborhood) {
-        patronStack.push(patronID); // literally only here so i don't lose marks for not using a stack
+    // Populate stack with patron IDs
+    for (const std::string& patronID : neighborhood) {
+        patronStack.push(patronID);
     }
 
+    // Process each patron
     while (!patronStack.isEmpty()) {
         std::string patronID = patronStack.top();
+        patronStack.pop();
+
         UnorderedSet<Book>* patronBooksBorrowed = userBorrowedBooks.search(patronID);
         if (patronBooksBorrowed) {
-            for (const Book &bk: *patronBooksBorrowed) {
-                int *bookExists = frequencyMap.search(bk.ISBN);
-                int updatedFreq = bookExists ? ++(*bookExists) : 1;
-                frequencyMap.insert(bk.ISBN, updatedFreq);
-                if (!targetUserBooks->search(bk))
+            // Update frequency map and recommended books
+            for (const Book& bk : *patronBooksBorrowed) {
+                frequencyMap[bk.ISBN]++;
+                if (!targetUserBooks->search(bk)) {
                     recommendedBooks.insert(bk);
+                }
             }
         }
-        patronStack.pop();
     }
-
 
     return recommendedBooks;
 }
@@ -86,16 +84,15 @@ double BookRecommendation::calculateSimilarity(const std::string &userID1, const
     UnorderedSet<Book> *user2BookSet = userBorrowedBooks.search(userID2);
 
     if (user1BookSet == nullptr || user1BookSet->size() == 0 || user2BookSet == nullptr || user2BookSet->size() == 0)
-//        throw std::runtime_error("User doesn't exist in DB or doesn't have books.");
-        return 0.0;
+        return unionCardinality;
 
 
 
-    for (const Book &bk: *user1BookSet)
+    for (const Book &bk: *user1BookSet) {
         if (user2BookSet->search(bk))
             ++intersectCardinality;
+    }
 
-    // everything in both sets minus the intersection overcounting
     unionCardinality = user1BookSet->size() + user2BookSet->size() - intersectCardinality;
 
     if (unionCardinality == 0.0)
