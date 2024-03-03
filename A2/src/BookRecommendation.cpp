@@ -7,36 +7,6 @@
 using namespace std;
 
 /**
- * This function is responsible for adding a book borrowed by a user.
- * @param userID The ID of the user borrowing the book.
- * @param book The book being borrowed.
- */
-void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
-    // Search for the unordered set of borrowed books by the user
-    UnorderedSet<Book>* borrowedBooks = userBorrowedBooks.search(userID.ID);
-    if (borrowedBooks != nullptr) {
-        borrowedBooks->insert(book);
-    } else {
-        // If the user has no borrowed books, create a new set and insert the borrowed books and associate them to the user
-        borrowedBooks = new UnorderedSet<Book>();
-        borrowedBooks->insert(book);
-        userBorrowedBooks.insert(userID.ID, *borrowedBooks);
-    }
-
-    // Search for the set of users who borrowed this book
-    UnorderedSet<Patron>* borrowedBooksByUsers = bookBorrowedByUsers.search(book.ISBN);
-    if (borrowedBooksByUsers != nullptr) {
-        borrowedBooksByUsers->insert(userID);
-    }
-    else {
-        // If no users have borrowed this book, create a new set and insert the user
-        borrowedBooksByUsers = new UnorderedSet<Patron>();
-        borrowedBooksByUsers->insert(userID);
-        bookBorrowedByUsers.insert(book.ISBN, *borrowedBooksByUsers);
-    }
-}
-
-/**
  * This function is responsible for getting book recommendations for a user.
  * @param targetUserID The ID of the target user.
  * @param numRecommendations The number of recommendations to retrieve.
@@ -132,6 +102,38 @@ double BookRecommendation::calculateSimilarity(const string &userID1, const stri
         return 1.0;
 
     return intersectCardinality / unionCardinality;
+}
+
+
+
+/**
+ * This function is responsible for adding a book borrowed by a user.
+ * @param userID The ID of the user borrowing the book.
+ * @param book The book being borrowed.
+ */
+void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
+    // Search for the unordered set of borrowed books by the user
+    UnorderedSet<Book>* borrowedBooks = userBorrowedBooks.search(userID.ID);
+    if (borrowedBooks != nullptr) {
+        borrowedBooks->insert(book);
+    } else {
+        // If the user has no borrowed books, create a new set and insert the borrowed books and associate them to the user
+        borrowedBooks = new UnorderedSet<Book>();
+        borrowedBooks->insert(book);
+        userBorrowedBooks.insert(userID.ID, *borrowedBooks);
+    }
+
+    // Search for the set of users who borrowed this book
+    UnorderedSet<Patron>* borrowedBooksByUsers = bookBorrowedByUsers.search(book.ISBN);
+    if (borrowedBooksByUsers != nullptr) {
+        borrowedBooksByUsers->insert(userID);
+    }
+    else {
+        // If no users have borrowed this book, create a new set and insert the user
+        borrowedBooksByUsers = new UnorderedSet<Patron>();
+        borrowedBooksByUsers->insert(userID);
+        bookBorrowedByUsers.insert(book.ISBN, *borrowedBooksByUsers);
+    }
 }
 
 /**
