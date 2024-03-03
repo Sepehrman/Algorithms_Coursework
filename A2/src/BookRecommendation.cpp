@@ -90,8 +90,8 @@ double BookRecommendation::calculateSimilarity(const string &userID1, const stri
     if (user1BookSet->size() == 0 || user2BookSet->size() == 0) return unionCardinality;
 
     // Calculate the intersection and union of borrowed books. If there are similarities found, increment cardinality by 1
-    for (const Book &bk: *user1BookSet) {
-        if (user2BookSet->search(bk))
+    for (const Book &book: *user1BookSet) {
+        if (user2BookSet->search(book))
             ++intersectCardinality;
     }
 
