@@ -4,63 +4,89 @@
  */
 
 #include "../include/BookRecommendation.h"
+using namespace std;
 
+/**
+ * This function is responsible for adding a book borrowed by a user.
+ * @param userID The ID of the user borrowing the book.
+ * @param book The book being borrowed.
+ */
 void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
+    // Search for the unordered set of borrowed books by the user
     UnorderedSet<Book>* borrowedBooks = userBorrowedBooks.search(userID.ID);
-    if (borrowedBooks) {
+    if (borrowedBooks != nullptr) {
         borrowedBooks->insert(book);
     } else {
+        // If the user has no borrowed books, create a new set and insert the borrowed books and associate them to the user
         borrowedBooks = new UnorderedSet<Book>();
         borrowedBooks->insert(book);
         userBorrowedBooks.insert(userID.ID, *borrowedBooks);
     }
 
+    // Search for the set of users who borrowed this book
     UnorderedSet<Patron>* borrowedBooksByUsers = bookBorrowedByUsers.search(book.ISBN);
-    if (borrowedBooksByUsers)
+    if (borrowedBooksByUsers != nullptr) {
         borrowedBooksByUsers->insert(userID);
+    }
     else {
+        // If no users have borrowed this book, create a new set and insert the user
         borrowedBooksByUsers = new UnorderedSet<Patron>();
         borrowedBooksByUsers->insert(userID);
         bookBorrowedByUsers.insert(book.ISBN, *borrowedBooksByUsers);
     }
 }
 
-
-std::vector<Book> BookRecommendation::getBookRecommendations(const std::string &targetUserID,
-                                                             int numRecommendations, int neighborhoodSize) {
-    UnorderedSet<std::string> neighbourhood = getNeighborhood(targetUserID, neighborhoodSize);
+/**
+ * This function is responsible for getting book recommendations for a user.
+ * @param targetUserID The ID of the target user.
+ * @param numRecommendations The number of recommendations to retrieve.
+ * @param neighborhoodSize The size of the user neighborhood to consider.
+ * @return A vector of recommended books.
+ */
+vector<Book> BookRecommendation::getBookRecommendations(const string &targetUserID, int numRecommendations, int neighborhoodSize) {
+    // Get the neighborhood of the target user based on similarity
+    UnorderedSet<string> neighbourhood = getNeighborhood(targetUserID, neighborhoodSize);
+    // Get the initial recommended books based on the neighborhood
     UnorderedSet<Book> initRecommendations = getRecommendedBooks(neighbourhood, targetUserID);
 
-    std::vector<Book> finalRecommendations;
+    vector<Book> finalRecommendations;
     finalRecommendations.reserve(numRecommendations); // Reserve space to avoid unnecessary reallocation
 
+    // Copy the recommended books to the final recommendations vector
     UnorderedSet<Book>::Iterator it = initRecommendations.begin();
     for (int i = 0; i < numRecommendations && it != initRecommendations.end(); ++i, ++it) {
-        finalRecommendations.push_back(std::move(*it));
+        finalRecommendations.push_back(move(*it));
     }
     return finalRecommendations;
 }
 
-UnorderedSet<Book> BookRecommendation::getRecommendedBooks(const UnorderedSet<std::string> &neighborhood,
-                                                           const std::string &targetUserID) {
-    Stack<std::string> patronStack;
-    std::unordered_map<std::string, int> frequencyMap;
+/**
+ * This function is responsible for getting recommended books based on user neighborhood.
+ * @param neighborhood The neighborhood of the target user.
+ * @param targetUserID The ID of the target user.
+ * @return A set of recommended books.
+ */
+UnorderedSet<Book> BookRecommendation::getRecommendedBooks(const UnorderedSet<string> &neighborhood, const string &targetUserID) {
+    Stack<string> patronStack;
+    unordered_map<string, int> frequencyMap;
     UnorderedSet<Book> recommendedBooks;
 
+    // Get the set of books borrowed by the target user
     UnorderedSet<Book>* targetUserBooks = userBorrowedBooks.search(targetUserID);
     if (!targetUserBooks)
-        throw std::runtime_error("Error: User must have borrowed books");
+        throw runtime_error("Error: User must have borrowed books");
 
     // Populate stack with patron IDs
-    for (const std::string& patronID : neighborhood) {
+    for (const string& patronID : neighborhood) {
         patronStack.push(patronID);
     }
 
-    // Process each patron
+    // Process each patron in the neighborhood
     while (!patronStack.isEmpty()) {
-        std::string patronID = patronStack.top();
+        string patronID = patronStack.top();
         patronStack.pop();
 
+        // Get the set of books borrowed by the current patron
         UnorderedSet<Book>* patronBooksBorrowed = userBorrowedBooks.search(patronID);
         if (patronBooksBorrowed) {
             // Update frequency map and recommended books
@@ -76,18 +102,25 @@ UnorderedSet<Book> BookRecommendation::getRecommendedBooks(const UnorderedSet<st
     return recommendedBooks;
 }
 
-double BookRecommendation::calculateSimilarity(const std::string &userID1, const std::string &userID2) {
+/**
+ * This function is responsible for calculating the similarity between two users based on borrowed books.
+ * @param userID1 The ID of the first user.
+ * @param userID2 The ID of the second user.
+ * @return The Jaccard similarity coefficient between the two users.
+ */
+double BookRecommendation::calculateSimilarity(const string &userID1, const string &userID2) {
     double unionCardinality = 0.0;
     double intersectCardinality = 0.0;
 
+    // Get the set of books borrowed by each given user
     UnorderedSet<Book> *user1BookSet = userBorrowedBooks.search(userID1);
     UnorderedSet<Book> *user2BookSet = userBorrowedBooks.search(userID2);
 
-    if (user1BookSet == nullptr || user1BookSet->size() == 0 || user2BookSet == nullptr || user2BookSet->size() == 0)
+    // If any user has not borrowed any books, return 0 similarity
+    if (user1BookSet->size() == 0 || user2BookSet->size() == 0)
         return unionCardinality;
 
-
-
+    // Calculate the intersection and union of borrowed books. If there are similarities found, increment cardinality by 1
     for (const Book &bk: *user1BookSet) {
         if (user2BookSet->search(bk))
             ++intersectCardinality;
@@ -101,54 +134,52 @@ double BookRecommendation::calculateSimilarity(const std::string &userID1, const
     return intersectCardinality / unionCardinality;
 }
 
-UnorderedSet<std::string> BookRecommendation::getNeighborhood(const std::string &targetUserID, int neighborhoodSize) {
-    UnorderedSet<std::string> neighbourhood = UnorderedSet<std::string>();
-    std::vector<std::pair<std::string, double>> similHeap(0);
-    Stack<std::string> topKStack = Stack<std::string>();
+/**
+ * This function is responsible for getting the neighborhood of a user based on similarity.
+ * @param targetUserID The ID of the target user.
+ * @param neighborhoodSize The size of the neighborhood to consider.
+ * @return The neighborhood set.
+ */
+UnorderedSet<string> BookRecommendation::getNeighborhood(const string &targetUserID, int neighborhoodSize) {
+    UnorderedSet<string> neighbourhood = UnorderedSet<string>();
+    vector<pair<string, double>> similHeap;
 
-    std::make_heap(similHeap.begin(), similHeap.end(),
-                   [](std::pair<std::string, double> a, std::pair<std::string, double> b) -> bool {
-                       if (a.second == b.second)
-                           return a.first > b.first;
-                       return a.second < b.second;
-                   });
-
+    // Iterate over all existing users
     for (unsigned int i = 0; i < userBorrowedBooks.tableSize; ++i) {
+        // If the user is not the target user
         if (userBorrowedBooks.hashTable[i].occupied && userBorrowedBooks.hashTable[i].key != targetUserID) {
-            std::string key = userBorrowedBooks.hashTable[i].key;
+            string key = userBorrowedBooks.hashTable[i].key;
+            // Calculate similarity between the target user and the current user
             double similarity = calculateSimilarity(targetUserID, key);
             if (similarity == 0.0)
-                continue; // no similarity, we don't give a FUCK. PLEASE say this in the assignment readme next timeFUCK.
+                continue;
 
-            std::pair<std::string, double> tuple = make_pair(key, similarity);
+            pair<string, double> tuple = make_pair(key, similarity);
 
-            similHeap.emplace_back(tuple);
-            std::push_heap(similHeap.begin(), similHeap.end(), // belongs to "algorithms" lib therefore allowed
-                           [](std::pair<std::string, double> a, std::pair<std::string, double> b) -> bool {
-                               if (a.second == b.second)
-                                   return a.first > b.first;// lexographic sorting if same similarity.
-                               return a.second < b.second;
-                           });
+            // Insert the similarity pair into the heap sorted by similarity
+            bool inserted = false;
+            for (vector<pair<string, double>>::iterator it = similHeap.begin(); it != similHeap.end(); ++it) {
+                if (it->second < similarity || (it->second == similarity && it->first > key)) {
+                    similHeap.insert(it, tuple);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted) {
+                similHeap.push_back(tuple);
+            }
+
+            // Keep only the top neighborhoodSize similarities
+            if (similHeap.size() > static_cast<unsigned>(neighborhoodSize)) {
+                similHeap.pop_back();
+            }
         }
     }
 
-    for (int i = 0; i < neighborhoodSize && similHeap.size() != 0; i++) {
-        // we HAVE to use a stack according to ass md or we lose marks
-        // we can just as easily directly insert to the unordered set instead and save additional + K, though.
-        topKStack.push(similHeap[0].first);
-        std::pop_heap(similHeap.begin(), similHeap.end(), [](std::pair<std::string, double> a, std::pair<std::string, double> b) -> bool {
-            if (a.second == b.second)
-                return a.first > b.first;
-            return a.second < b.second;
-        });
-        similHeap.pop_back();
-    }
-
-    while (topKStack.size() > 0) {
-        neighbourhood.insert(topKStack.top());
-        topKStack.pop();
+    // Add the top K similar users to the neighborhood set
+    for (const pair<string, double> &pair : similHeap) {
+        neighbourhood.insert(pair.first);
     }
 
     return neighbourhood;
 }
-
