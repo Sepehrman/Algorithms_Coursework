@@ -156,7 +156,8 @@ void HashTable<KeyType, ValueType>::clear() {
 template<typename KeyType, typename ValueType>
 unsigned int HashTable<KeyType, ValueType>::size() const {
     unsigned int count = 0;
-    for (const auto& bucket : hashTable) {
+    // For each bucket in the hashtable, count up if it is occupied
+    for (Bucket bucket : hashTable) {
         if (bucket.occupied) {
             ++count;
         }
@@ -208,7 +209,7 @@ void HashTable<KeyType, ValueType>::rehash() {
     clear();
 
     // Re-insert elements into the new table
-    for (const auto& bucket : oldTable) {
+    for (Bucket bucket : oldTable) {
         if (bucket.occupied) {
             insert(bucket.key, bucket.value);
         }
