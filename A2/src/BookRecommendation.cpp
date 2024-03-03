@@ -142,7 +142,7 @@ void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
  */
 UnorderedSet<string> BookRecommendation::getNeighborhood(const string &targetUserID, int neighborhoodSize) {
     UnorderedSet<string> neighbourhood;
-    vector<vector<double>> similarityHeap;
+    vector<vector<double>> similarityPair;
 
     // Iterate over all existing users
     for (unsigned int i = 0; i < userBorrowedBooks.tableSize; ++i) {
@@ -162,26 +162,26 @@ UnorderedSet<string> BookRecommendation::getNeighborhood(const string &targetUse
 
             // Insert the similarity entry into the heap sorted by similarity
             bool inserted = false;
-            for (auto it = similarityHeap.begin(); it != similarityHeap.end(); ++it) {
+            for (auto it = similarityPair.begin(); it != similarityPair.end(); ++it) {
                 if ((*it)[1] < similarity || ((*it)[1] == similarity && userBorrowedBooks.hashTable[(*it)[0]].key > key)) {
-                    similarityHeap.insert(it, entry);
+                    similarityPair.insert(it, entry);
                     inserted = true;
                     break;
                 }
             }
             if (!inserted) {
-                similarityHeap.push_back(entry);
+                similarityPair.push_back(entry);
             }
 
             // Keep only the top neighborhoodSize similarities
-            if (similarityHeap.size() > static_cast<unsigned>(neighborhoodSize)) {
-                similarityHeap.pop_back();
+            if (similarityPair.size() > static_cast<unsigned>(neighborhoodSize)) {
+                similarityPair.pop_back();
             }
         }
     }
 
     // Add the top K similar users to the neighborhood set
-    for (const auto &entry : similarityHeap) {
+    for (const auto &entry : similarityPair) {
         neighbourhood.insert(userBorrowedBooks.hashTable[entry[0]].key);
     }
 
