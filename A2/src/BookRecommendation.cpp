@@ -87,8 +87,7 @@ double BookRecommendation::calculateSimilarity(const string &userID1, const stri
     UnorderedSet<Book> *user2BookSet = userBorrowedBooks.search(userID2);
 
     // If any user has not borrowed any books, return 0 similarity
-    if (user1BookSet->size() == 0 || user2BookSet->size() == 0)
-        return unionCardinality;
+    if (user1BookSet->size() == 0 || user2BookSet->size() == 0) return unionCardinality;
 
     // Calculate the intersection and union of borrowed books. If there are similarities found, increment cardinality by 1
     for (const Book &bk: *user1BookSet) {
@@ -98,8 +97,7 @@ double BookRecommendation::calculateSimilarity(const string &userID1, const stri
 
     unionCardinality = user1BookSet->size() + user2BookSet->size() - intersectCardinality;
 
-    if (unionCardinality == 0.0)
-        return 1.0;
+    if (unionCardinality == 0.0) return 1.0;
 
     return intersectCardinality / unionCardinality;
 }
