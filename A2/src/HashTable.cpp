@@ -215,8 +215,13 @@ void HashTable<KeyType, ValueType>::rehash() {
     }
 }
 
-
-
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType& key, ValueType newValue) {
+    unsigned int index = hashKey(key) % tableSize;
+    while (hashTable[index].occupied && hashTable[index].key != key) {
+        index = (index + 1) % tableSize;
+    }
+    if (hashTable[index].occupied) {
+        hashTable[index].value = newValue;
+    }
 }
