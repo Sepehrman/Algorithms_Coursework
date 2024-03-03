@@ -216,6 +216,11 @@ void HashTable<KeyType, ValueType>::rehash() {
     }
 }
 
+/**
+ * The following code updates the value of an element in the hashtable given the key
+ * @param key key element we want to set the new value for
+ * @param newValue new value that is being inserted into th
+ */
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType& key, ValueType newValue) {
     unsigned int index = hashKey(key) % tableSize;
