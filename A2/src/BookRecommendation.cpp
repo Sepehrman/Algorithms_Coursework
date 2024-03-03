@@ -143,8 +143,8 @@ void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
  * @return The neighborhood set.
  */
 UnorderedSet<string> BookRecommendation::getNeighborhood(const string &targetUserID, int neighborhoodSize) {
-    UnorderedSet<string> neighbourhood = UnorderedSet<string>();
-    vector<pair<string, double>> similHeap;
+    UnorderedSet<string> neighbourhood;
+    vector<vector<double>> similarityHeap;
 
     // Iterate over all existing users
     for (unsigned int i = 0; i < userBorrowedBooks.tableSize; ++i) {
@@ -152,35 +152,39 @@ UnorderedSet<string> BookRecommendation::getNeighborhood(const string &targetUse
         if (userBorrowedBooks.hashTable[i].occupied && userBorrowedBooks.hashTable[i].key != targetUserID) {
             string key = userBorrowedBooks.hashTable[i].key;
             // Calculate similarity between the target user and the current user
+            // if there are no similarities, move to the next
             double similarity = calculateSimilarity(targetUserID, key);
             if (similarity == 0.0)
                 continue;
 
-            pair<string, double> tuple = make_pair(key, similarity);
+            // Create a vector to hold user ID index and similarity
+            vector<double> entry(2);
+            entry[0] = i;
+            entry[1] = similarity;
 
-            // Insert the similarity pair into the heap sorted by similarity
+            // Insert the similarity entry into the heap sorted by similarity
             bool inserted = false;
-            for (vector<pair<string, double>>::iterator it = similHeap.begin(); it != similHeap.end(); ++it) {
-                if (it->second < similarity || (it->second == similarity && it->first > key)) {
-                    similHeap.insert(it, tuple);
+            for (auto it = similarityHeap.begin(); it != similarityHeap.end(); ++it) {
+                if ((*it)[1] < similarity || ((*it)[1] == similarity && userBorrowedBooks.hashTable[(*it)[0]].key > key)) {
+                    similarityHeap.insert(it, entry);
                     inserted = true;
                     break;
                 }
             }
             if (!inserted) {
-                similHeap.push_back(tuple);
+                similarityHeap.push_back(entry);
             }
 
             // Keep only the top neighborhoodSize similarities
-            if (similHeap.size() > static_cast<unsigned>(neighborhoodSize)) {
-                similHeap.pop_back();
+            if (similarityHeap.size() > static_cast<unsigned>(neighborhoodSize)) {
+                similarityHeap.pop_back();
             }
         }
     }
 
     // Add the top K similar users to the neighborhood set
-    for (const pair<string, double> &pair : similHeap) {
-        neighbourhood.insert(pair.first);
+    for (const auto &entry : similarityHeap) {
+        neighbourhood.insert(userBorrowedBooks.hashTable[entry[0]].key);
     }
 
     return neighbourhood;
