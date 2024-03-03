@@ -1,6 +1,10 @@
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
+
 #include "HashTable.h"
 #include <functional> // for std::hash
-
 
 /**
  * Hash function to generate a hashkey given a key
