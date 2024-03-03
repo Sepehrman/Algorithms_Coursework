@@ -7,22 +7,22 @@
 #include <algorithm>
 
 void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
-    UnorderedSet<Book>* booksBorrowed = userBorrowedBooks.search(userID.ID);
-    if (booksBorrowed) {
-        booksBorrowed->insert(book);
+    UnorderedSet<Book>* borrowedBooks = userBorrowedBooks.search(userID.ID);
+    if (borrowedBooks) {
+        borrowedBooks->insert(book);
     } else {
-        booksBorrowed = new UnorderedSet<Book>();
-        booksBorrowed->insert(book);
-        userBorrowedBooks.insert(userID.ID, *booksBorrowed);
+        borrowedBooks = new UnorderedSet<Book>();
+        borrowedBooks->insert(book);
+        userBorrowedBooks.insert(userID.ID, *borrowedBooks);
     }
 
-    UnorderedSet<Patron>* usersBorrowingBook = bookBorrowedByUsers.search(book.ISBN);
-    if (usersBorrowingBook)
-        usersBorrowingBook->insert(userID);
+    UnorderedSet<Patron>* borrowedBooksByUsers = bookBorrowedByUsers.search(book.ISBN);
+    if (borrowedBooksByUsers)
+        borrowedBooksByUsers->insert(userID);
     else {
-        usersBorrowingBook = new UnorderedSet<Patron>();
-        usersBorrowingBook->insert(userID);
-        bookBorrowedByUsers.insert(book.ISBN, *usersBorrowingBook);
+        borrowedBooksByUsers = new UnorderedSet<Patron>();
+        borrowedBooksByUsers->insert(userID);
+        bookBorrowedByUsers.insert(book.ISBN, *borrowedBooksByUsers);
     }
 }
 
