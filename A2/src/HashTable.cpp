@@ -40,6 +40,28 @@ typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::
     return Iterator(hashTable.end(), hashTable.end());
 }
 
+
+/**
+ * Hash function to generate a hashkey given a key
+ * @param key a Generic object type of key
+ * @return an Integer Hash Key
+ */
+template<typename KeyType>
+size_t hashKey(const KeyType& key) {
+
+    std::stringstream ss;
+    ss << key; // Convert key to a string representation using the << operator
+    std::string str = ss.str(); // Convert the string representation to a string
+
+    unsigned long i = 0;
+
+    for (char ch : str) // Iterate over each string
+        i += ch;
+
+    return i;
+}
+
+
 /**
  * Overloaded function call for the operator to get or modify the value of a given key.
  * @param key the key that's associated value is retrieved or modified
@@ -224,23 +246,3 @@ void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType& key, ValueT
     }
 }
 
-
-/**
- * Hash function to generate a hashkey given a key
- * @param key a Generic object type of key
- * @return an Integer Hash Key
- */
-template<typename KeyType>
-size_t hashKey(const KeyType& key) {
-
-    std::stringstream ss;
-    ss << key; // Convert key to a string representation using the << operator
-    std::string str = ss.str(); // Convert the string representation to a string
-
-    unsigned long i = 0;
-
-    for (char ch : str) // Iterate over each string
-        i += ch;
-
-    return i;
-}
