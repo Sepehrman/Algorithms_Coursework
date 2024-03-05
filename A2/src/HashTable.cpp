@@ -4,18 +4,6 @@
  */
 
 #include "HashTable.h"
-#include <functional> // for std::hash
-
-/**
- * Hash function to generate a hashkey given a key
- * @param key a Generic object type of key
- * @return an Integer Hash Key
- */
-template<typename KeyType>
-size_t hashKey(const KeyType& key) {
-    return std::hash<KeyType>{}(key);
-}
-
 
 /**
  * A constructor responsible for initializing a hashtable
@@ -234,4 +222,25 @@ void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType& key, ValueT
     if (hashTable[index].occupied) {
         hashTable[index].value = newValue;
     }
+}
+
+
+/**
+ * Hash function to generate a hashkey given a key
+ * @param key a Generic object type of key
+ * @return an Integer Hash Key
+ */
+template<typename KeyType>
+size_t hashKey(const KeyType& key) {
+
+    std::stringstream ss;
+    ss << key; // Convert key to a string representation using the << operator
+    std::string str = ss.str(); // Convert the string representation to a string
+
+    unsigned long i = 0;
+
+    for (char ch : str) // Iterate over each string
+        i += ch;
+
+    return i;
 }
