@@ -7,8 +7,8 @@
 
 using namespace std;
 
-/*
- * A constructor for our Unordered Red-Black-Tree Set
+/**
+ * A constructor for our Unordered Red-Black-Tree Set. Responsible for initializing everything on our tree
  */
 template<typename Key>
 UnorderedSet<Key>::UnorderedSet() {
@@ -16,8 +16,8 @@ UnorderedSet<Key>::UnorderedSet() {
     setSize = 0;
 }
 
-/*
- * A destructor for our Unordered Red-Black-Tree Set
+/**
+ * A destructor for our Unordered Red-Black-Tree Set. Clears nodes across the tree
  */
 template<typename Key>
 UnorderedSet<Key>::~UnorderedSet() {
