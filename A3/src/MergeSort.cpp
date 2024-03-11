@@ -4,18 +4,23 @@
  */
 
 #include "../include/MergeSort.h"
+using namespace std;
 
-//Merge sort method. Recursive and Split into smallest size,
+/**
+ * Merge sort method. Recursive and Split into smallest size
+ * @param arr an array (Vector) of elements
+ */
 template <typename T>
 void MergeSort<T>::sort(std::vector<T>& arr){
 
     if (arr.size() <= 1) {
         return;
     }
+    // Find the size of the mid-point of the array
     int mid = arr.size() / 2 ;
 
-    std::vector<T> left (arr.begin(), arr.begin() + mid);
-    std::vector<T> right (arr.begin() + mid, arr.end());
+    vector<T> left = vector(arr.begin(), arr.begin() + mid);
+    vector<T> right = vector(arr.begin() + mid, arr.end());
 
     sort(left);
     sort(right);
