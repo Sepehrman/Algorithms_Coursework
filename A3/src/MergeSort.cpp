@@ -1,6 +1,7 @@
-//
-// Created by Winston on 11/9/2023.
-//
+/**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
 
 #include "../include/MergeSort.h"
 
