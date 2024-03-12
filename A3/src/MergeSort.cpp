@@ -16,6 +16,7 @@ void MergeSort<T>::sort(std::vector<T>& arr){
     if (arr.size() <= 1) {
         return;
     }
+
     // Find the size of the mid-point of the array
     int mid = arr.size() / 2 ;
 
@@ -32,30 +33,32 @@ void MergeSort<T>::sort(std::vector<T>& arr){
 //Merge merge method.
 template <typename T>
 void MergeSort<T>::merge(std::vector<T>& arr, const std::vector<T>& left, const std::vector<T>& right){
-    int leftPointer = 0;
-    int rightPointer = 0;
+
     int arrayPointer = 0;
+    int leftPtr = 0;
+    int rightPtr = 0;
 
     // Merge the left and right arrays into the main array in sorted order while they are at the given size.
-    while(leftPointer < left.size() && rightPointer < right.size()){
+    while(leftPtr < left.size() && rightPtr < right.size()){
         // Compare if the element of the left or right array are bigger
         // sets the element to the arrayPointer and increases the arrayPointer & the left/right pointer index by 1
-        if(compare(left[leftPointer], right[rightPointer])){
-            arr[arrayPointer] = left[leftPointer];
-            leftPointer++;
+        if(compare(left[leftPtr], right[rightPtr])){
+            arr[arrayPointer] = left[leftPtr];
+            leftPtr++;
             arrayPointer++;
         } else {
-            arr[arrayPointer] = right[rightPointer];
-            rightPointer++;
+            arr[arrayPointer] = right[rightPtr];
+            rightPtr++;
             arrayPointer++;
         }
     }
+
     // Copy any remaining elements from the left or right array.
-        while (leftPointer < left.size()) {
-            arr[arrayPointer++] = left[leftPointer++];
+        while (leftPtr < left.size()) {
+            arr[arrayPointer++] = left[leftPtr++];
         }
-        while (rightPointer < right.size()) {
-            arr[arrayPointer++] = right[rightPointer++];
+        while (rightPtr < right.size()) {
+            arr[arrayPointer++] = right[rightPtr++];
         }
 }
 

@@ -5,33 +5,40 @@
 
 #include "../include/RadixSort.h"
 
+/**
+ * Sort using Radix Sort
+ */
 template <typename T>
 void RadixSort<T>::sort() {
-    int time = getMaxDigitCount();
+    int time = getMaxDigitCount(); // the max digit count among elements
     int digit = 1;
-    while (time > 0){
+    while (time > 0) { // Iterates over each digit place from the least significant to the most
         countingSort(digit);
         digit++;
         time--;
     }
 }
 
-//Get the max digit count.
+/**
+ * Get the Max Digit Count among all the elements
+ * @return an Integer, indicating the max digit count
+ */
 template <typename T>
 int RadixSort<T>::getMaxDigitCount() {
-    int index = 1;
-    int biggest = 0;
+    int biggestKey = 0; // Holds the biggest key among elements
 
-    for (const T& element : elements_) {
+    for (const T& element : elements_) { // Iterates over all elements
         int key = getKeyFunction_(element);
-        if (biggest < key){
-            biggest = key;
+        if (biggestKey < key){ // If the current key is larger than the biggestKey, set biggest Key to current
+            biggestKey = key;
         }
     }
-    return getDigitCount(biggest);
+    return getDigitCount(biggestKey);
 }
 
-//Get the number's digit count.
+/**
+ * Get the number's digit count given a number
+ */
 template <typename T>
 int RadixSort<T>::getDigitCount(int number) {
     if (number == 0) {
@@ -40,14 +47,15 @@ int RadixSort<T>::getDigitCount(int number) {
     int count = 0;
     int theNumber = number;
     while (theNumber != 0){
-        count ++;
         theNumber = theNumber / 10;
+        count++;
     }
-    //count = count +1;
     return count;
 }
 
-//Sort based on the digit value one time.
+/**
+ * Sort based on the digit value one time.
+ */
 template <typename T>
 void RadixSort<T>::countingSort(int digit) {
     std::vector<T> output(elements_.size());
@@ -75,7 +83,9 @@ void RadixSort<T>::countingSort(int digit) {
     }
 }
 
-//Get the digit number at the digit place.
+/**
+ * Get the digit number at the digit place.
+ */
 template <typename T>
 int RadixSort<T>::getDigitValue(int number, int digit) {
     int theDigitNumber = 0;
