@@ -19,12 +19,12 @@ void MergeSort<T>::sort(std::vector<T>& arr){
     // Find the size of the mid-point of the array
     int mid = arr.size() / 2 ;
 
-    vector<T> left = vector(arr.begin(), arr.begin() + mid);
-    vector<T> right = vector(arr.begin() + mid, arr.end());
+    // separate mergesort into two left-half & right-half lists
+    vector<T> left = vector<T>(arr.begin(), arr.begin() + mid);
+    vector<T> right = vector<T>(arr.begin() + mid, arr.end());
 
     sort(left);
     sort(right);
-
     merge(arr, left, right);
 
 }
