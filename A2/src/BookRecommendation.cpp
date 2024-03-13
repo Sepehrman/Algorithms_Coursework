@@ -142,47 +142,34 @@ void BookRecommendation::addUserBorrowedBook(Patron &userID, Book &book) {
  */
 UnorderedSet<string> BookRecommendation::getNeighborhood(const string &targetUserID, int neighborhoodSize) {
     UnorderedSet<string> neighbourhood;
-    vector<vector<double>> similarityPair;
+    Stack<std::string> topKStack = Stack<std::string>();
+
 
     // Iterate over all existing users
     for (unsigned int i = 0; i < userBorrowedBooks.tableSize; ++i) {
         // If the user is not the target user
         if (userBorrowedBooks.hashTable[i].occupied && userBorrowedBooks.hashTable[i].key != targetUserID) {
-            string key = userBorrowedBooks.hashTable[i].key;
+            std::string key = userBorrowedBooks.hashTable[i].key;
             // Calculate similarity between the target user and the current user
             // if there are no similarities, move to the next
             double similarity = calculateSimilarity(targetUserID, key);
             if (similarity == 0.0)
                 continue;
 
-            // Create a vector to hold user ID index and similarity
-            vector<double> entry(2);
-            entry[0] = i;
-            entry[1] = similarity;
-
-            // Insert the similarity entry into the heap sorted by similarity
-            bool inserted = false;
-            for (auto it = similarityPair.begin(); it != similarityPair.end(); ++it) {
-                if ((*it)[1] < similarity || ((*it)[1] == similarity && userBorrowedBooks.hashTable[(*it)[0]].key > key)) {
-                    similarityPair.insert(it, entry);
-                    inserted = true;
-                    break;
-                }
-            }
-            if (!inserted) {
-                similarityPair.push_back(entry);
-            }
+            // Push the similarity score and user ID onto the stack
+            topKStack.push(key);
 
             // Keep only the top neighborhoodSize similarities
-            if (similarityPair.size() > static_cast<unsigned>(neighborhoodSize)) {
-                similarityPair.pop_back();
+            if (topKStack.size() > static_cast<size_t>(neighborhoodSize)) {
+                topKStack.pop();
             }
         }
     }
 
     // Add the top K similar users to the neighborhood set
-    for (const auto &entry : similarityPair) {
-        neighbourhood.insert(userBorrowedBooks.hashTable[entry[0]].key);
+    while (!topKStack.isEmpty()) {
+        neighbourhood.insert(topKStack.top());
+        topKStack.pop();
     }
 
     return neighbourhood;
