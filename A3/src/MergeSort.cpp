@@ -30,7 +30,12 @@ void MergeSort<T>::sort(std::vector<T>& arr){
 
 }
 
-//Merge merge method.
+/**
+ * Our Merge Method that does the sorting from our recursive sort method
+ * @param arr a Pointer to our original array
+ * @param left a Pointer to our left array
+ * @param right a Pointer to our right array
+ */
 template <typename T>
 void MergeSort<T>::merge(std::vector<T>& arr, const std::vector<T>& left, const std::vector<T>& right){
 
