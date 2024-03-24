@@ -1,4 +1,9 @@
 /**
+ * @author          Sepehr Mansouri
+ * @StudentNumber   A01067581
+ */
+
+/**
  * Performs Radix Sort on the elements.
  * Sorts the elements by considering digits from the least significant to the most significant.
  */
