@@ -12,7 +12,7 @@ using namespace std;
  * @param bookCollection The collection of all books.
  */
 LibraryRestructuring::LibraryRestructuring(const UnorderedSet<BorrowRecord>& records, const UnorderedSet<Book>& bookCollection) {
-    //Initialize the 'allBooks' hash table with book information
+    //Initialize the 'allBooks' hash table with available books
     for (const Book& book : bookCollection) {
         allBooks.insert(book.ISBN, book);
     }
@@ -22,20 +22,20 @@ LibraryRestructuring::LibraryRestructuring(const UnorderedSet<BorrowRecord>& rec
         string isbn = record.bookISBN;
         string patronId = record.patronId;
 
-        int borrowingTime = Date::diffDuration(record.checkoutDate, record.returnDate);
-        if (bookBorrowingTime.search(isbn)) {
-            bookBorrowingTime[isbn] += borrowingTime;
-        } else {
-            bookBorrowingTime.insert(isbn, borrowingTime);
-        }
-
         // Update the mapping of patron to books
         if (!patronToBooks.search(patronId)) {
-            UnorderedSet<string> tempSet;
-            tempSet.insert(isbn);
-            patronToBooks.insert(patronId, tempSet);
+            UnorderedSet<string> set;
+            set.insert(isbn);
+            patronToBooks.insert(patronId, set);
         } else {
             patronToBooks[patronId].insert(isbn);
+        }
+
+        int borrowTime = Date::diffDuration(record.checkoutDate, record.returnDate);
+        if (bookBorrowingTime.search(isbn)) {
+            bookBorrowingTime[isbn] += borrowTime;
+        } else {
+            bookBorrowingTime.insert(isbn, borrowTime);
         }
     }
 
@@ -50,34 +50,6 @@ LibraryRestructuring::LibraryRestructuring(const UnorderedSet<BorrowRecord>& rec
             }
         }
     }
-}
-
-/**
- * Clusters and sorts the books using the provided sorting method.
- * @param sortBy The method by which to sort the clusters.
- * @return A vector of clusters, each containing a vector of ISBNs.
- */
-vector<vector<string>> LibraryRestructuring::clusterAndSort(const string& sortBy) {
-    vector<vector<string>> clusters;
-    HashTable<string, bool> visited;
-
-    for (const auto& entry : graph) {
-        const string& currentISBN = entry->key;
-
-        // If the current node is not visited, perform DFS to create a cluster
-        if (!visited[currentISBN]) {
-            vector<string> cluster;
-            dfs(currentISBN, cluster, visited);
-            clusters.push_back(cluster);
-        }
-    }
-
-    // Sorting using MergeSort
-    MergeSort<vector<string>> mergeSort([this](const vector<string>& a, const vector<string>& b) {
-        return getAverageBorrowingTime(a) < getAverageBorrowingTime(b);
-    });
-    mergeSort.sort(clusters);
-    return clusters;
 }
 
 /**
@@ -120,4 +92,34 @@ double LibraryRestructuring::getAverageBorrowingTime(const vector<string>& clust
 
     if (validEntries == 0) return 0.0;
     return totalBorrowingTime / validEntries;
+}
+
+
+
+/**
+ * Clusters and sorts the books using the provided sorting method.
+ * @param sortBy The method by which to sort the clusters.
+ * @return A vector of clusters, each containing a vector of ISBNs.
+ */
+vector<vector<string>> LibraryRestructuring::clusterAndSort(const string& sortBy) {
+    vector<vector<string>> clusters;
+    HashTable<string, bool> visited;
+
+    for (const auto& entry : graph) {
+        const string& currentISBN = entry->key;
+
+        // If the current node is not visited, perform DFS to create a cluster
+        if (!visited[currentISBN]) {
+            vector<string> cluster;
+            dfs(currentISBN, cluster, visited);
+            clusters.push_back(cluster);
+        }
+    }
+
+    // Sorting using MergeSort
+    MergeSort<vector<string>> mergeSort([this](const vector<string>& a, const vector<string>& b) {
+        return getAverageBorrowingTime(a) < getAverageBorrowingTime(b);
+    });
+    mergeSort.sort(clusters);
+    return clusters;
 }
