@@ -1,12 +1,6 @@
 /**
- * @author          Sepehr Mansouri
- * @StudentNumber   A01067581
- */
-
-#include "../include/RadixSort.h"
-
-/**
- * Sort using Radix Sort
+ * Performs Radix Sort on the elements.
+ * Sorts the elements by considering digits from the least significant to the most significant.
  */
 template <typename T>
 void RadixSort<T>::sort() {
@@ -20,8 +14,8 @@ void RadixSort<T>::sort() {
 }
 
 /**
- * Get the Max Digit Count among all the elements
- * @return an Integer, indicating the max digit count
+ * Calculates the maximum digit count among all the elements.
+ * @return An integer representing the maximum digit count.
  */
 template <typename T>
 int RadixSort<T>::getMaxDigitCount() {
@@ -29,7 +23,7 @@ int RadixSort<T>::getMaxDigitCount() {
 
     for (const T& element : elements_) { // Iterates over all elements
         int key = getKeyFunction_(element);
-        if (biggestKey < key){ // If the current key is larger than the biggestKey, set biggest Key to current
+        if (biggestKey < key) { // If the current key is larger than the biggestKey, set biggest Key to current
             biggestKey = key;
         }
     }
@@ -37,7 +31,9 @@ int RadixSort<T>::getMaxDigitCount() {
 }
 
 /**
- * Get the number's digit count given a number
+ * Calculates the number of digits in a given number.
+ * @param number The number for which digit count is calculated.
+ * @return An integer representing the count of digits in the given number.
  */
 template <typename T>
 int RadixSort<T>::getDigitCount(int number) {
@@ -46,7 +42,7 @@ int RadixSort<T>::getDigitCount(int number) {
     }
     int count = 0;
     int theNumber = number;
-    while (theNumber != 0){
+    while (theNumber != 0) {
         theNumber = theNumber / 10;
         count++;
     }
@@ -54,7 +50,8 @@ int RadixSort<T>::getDigitCount(int number) {
 }
 
 /**
- * Sort based on the digit value one time.
+ * Sorts the elements based on the digit value at a particular digit place.
+ * @param digit The position of the digit to consider for sorting.
  */
 template <typename T>
 void RadixSort<T>::countingSort(int digit) {
@@ -84,12 +81,15 @@ void RadixSort<T>::countingSort(int digit) {
 }
 
 /**
- * Get the digit number at the digit place.
+ * Gets the digit value at a specified position in a number.
+ * @param number The number from which digit value is extracted.
+ * @param digit The position of the digit to extract.
+ * @return An integer representing the digit at the specified position.
  */
 template <typename T>
 int RadixSort<T>::getDigitValue(int number, int digit) {
     int theDigitNumber = 0;
-    while (digit > 1){
+    while (digit > 1) {
         number = number / 10;
         digit--;
     }
