@@ -22,6 +22,13 @@ LibraryRestructuring::LibraryRestructuring(const UnorderedSet<BorrowRecord>& rec
         string isbn = record.bookISBN;
         string patronId = record.patronId;
 
+        int borrowTime = Date::diffDuration(record.checkoutDate, record.returnDate);
+        if (bookBorrowingTime.search(isbn)) {
+            bookBorrowingTime[isbn] += borrowTime;
+        } else {
+            bookBorrowingTime.insert(isbn, borrowTime);
+        }
+
         // Update the mapping of patron to books
         if (!patronToBooks.search(patronId)) {
             UnorderedSet<string> set;
@@ -31,12 +38,7 @@ LibraryRestructuring::LibraryRestructuring(const UnorderedSet<BorrowRecord>& rec
             patronToBooks[patronId].insert(isbn);
         }
 
-        int borrowTime = Date::diffDuration(record.checkoutDate, record.returnDate);
-        if (bookBorrowingTime.search(isbn)) {
-            bookBorrowingTime[isbn] += borrowTime;
-        } else {
-            bookBorrowingTime.insert(isbn, borrowTime);
-        }
+
     }
 
     // Create relationships in the graph
@@ -81,17 +83,17 @@ double LibraryRestructuring::getAverageBorrowingTime(const vector<string>& clust
         return 0.0;
     }
     size_t validEntries = 0;
-    double totalBorrowingTime = 0.0;
+    double cummulativeBorrowTime = 0.0;
 
     for (const string& isbn : cluster) {
         if (bookBorrowingTime.search(isbn)) {
-            totalBorrowingTime += bookBorrowingTime[isbn];
+            cummulativeBorrowTime += bookBorrowingTime[isbn];
             ++validEntries;
         }
     }
 
     if (validEntries == 0) return 0.0;
-    return totalBorrowingTime / validEntries;
+    return cummulativeBorrowTime / validEntries;
 }
 
 
