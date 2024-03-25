@@ -60,19 +60,20 @@ int RadixSort<T>::getDigitCount(int number) {
  */
 template <typename T>
 void RadixSort<T>::countingSort(int digit) {
-    std::vector<T> output(elements_.size());
+    vector<T> output(elements_.size());
     int count[10] = {0};
 
+    // Counting occurrences of each digit
     for (const T& element : elements_) {
-        int key = getKeyFunction_(element);
-        int keyDigit = getDigitValue(key, digit);
-        count[keyDigit]++;
+        count[getDigitValue(getKeyFunction_(element), digit)]++;
     }
 
+    // Calculate cumulative count
     for (int i = 1; i < 10; i++) {
         count[i] += count[i - 1];
     }
 
+    // Place elements in sorted order in output array
     for (int i = elements_.size() - 1; i >= 0; i--) {
         int key = getKeyFunction_(elements_[i]);
         int keyDigit = getDigitValue(key, digit);
@@ -80,9 +81,8 @@ void RadixSort<T>::countingSort(int digit) {
         count[keyDigit]--;
     }
 
-    for (int i = 0; i < elements_.size(); i++) {
-        elements_[i] = output[i];
-    }
+    // Copy sorted elements back to the original array
+    copy(output.begin(), output.end(), elements_.begin());
 }
 
 /**
